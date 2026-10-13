@@ -1,0 +1,9 @@
+reels/*/src/
+reels/*/build/
+__pycache__/
+*.mp4
+*.mov
+*.MOV
+*.MP4
+*.wav
+!assets/sfx/*.wav
