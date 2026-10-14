@@ -70,9 +70,52 @@ def from_lines(spec, cuts):
     return words
 
 
+def from_lines_aligned(spec, cuts):
+    """LINES (exact words) + machine word timings on the cut (spec.ASR_JSON: [{word,start,end}], e.g. from Vosk
+    run on build/voice_clean.wav) -> each spoken word gets the ASR start of its matched word; unmatched words are
+    interpolated between neighbours. Much tighter than syllable peaks."""
+    import difflib
+    asr = json.load(open(spec.path(spec.ASR_JSON)))
+    norm = lambda w: re.sub(r"[^a-z0-9]", "", w.lower())
+    bnd = cuts["audio_starts"] + [cuts["duration"]]
+    words = []
+    for L, text in enumerate(spec.LINES):
+        s0, s1 = bnd[L], bnd[L + 1]
+        toks = text.split()
+        A = [a for a in asr if s0 - 0.08 <= a["start"] < s1 - 0.03]
+        st = [None] * len(toks)
+        sm = difflib.SequenceMatcher(None, [norm(t) for t in toks], [norm(a["word"]) for a in A], autojunk=False)
+        for blk in sm.get_opcodes():
+            tag, i0, i1, j0, j1 = blk
+            if tag in ("equal", "replace"):
+                for k in range(i1 - i0):
+                    j = j0 + min(k * (j1 - j0) // max(1, i1 - i0), j1 - j0 - 1) if j1 > j0 else None
+                    if j is not None: st[i0 + k] = max(s0, A[j]["start"])
+        # drop anchors that squash words together (bad matches), then interpolate gaps by syllables
+        last = None
+        for i in range(len(toks)):
+            if st[i] is None: continue
+            if last is not None and st[i] - st[last] < 0.09 * sum(syllables(t) for t in toks[last:i]): st[i] = None
+            else: last = i
+        known =[(-1, s0)] + [(i, t) for i, t in enumerate(st) if t is not None] + [(len(toks), s1 - 0.15)]
+        for (ia, ta), (ib, tb) in zip(known, known[1:]):
+            gap = list(range(ia + 1, ib))
+            if not gap: continue
+            syl = [syllables(toks[i]) for i in gap]; tot = sum(syl) + (1 if ia >= 0 else 0); acc = 1 if ia >= 0 else 0
+            for i, n in zip(gap, syl):
+                st[i] = ta + (tb - ta) * acc / max(tot, 1); acc += n
+        for i, t in enumerate(toks):
+            words.append({"w": t, "s": round(float(max(st[i], words[-1]["s"] + 0.03 if words else 0)), 3), "line": L})
+    return words
+
+
 def build(spec):
     cuts = json.load(open(spec.path("build/cuts.json")))
-    words = from_srt(spec, cuts) if spec.get("SRT") else from_lines(spec, cuts)
+    words = (from_srt(spec, cuts) if spec.get("SRT") else
+             from_lines_aligned(spec, cuts) if spec.get("ASR_JSON") else from_lines(spec, cuts))
+    for w in words:   # hand fixes: WORD_FIX = {(line, "word"): seconds on the cut}
+        fx = spec.get("WORD_FIX", {}).get((w["line"], w["w"].strip(",.?:!")))
+        if fx is not None: w["s"] = fx
     words.sort(key=lambda w: w["s"])
     for i, w in enumerate(words):
         nxt = words[i + 1] if i + 1 < len(words) else None

@@ -15,7 +15,7 @@ House style (all from Neha's feedback, Days 3-5):
   * intro card is optional — only when the reel/series uses one (INTRO in the spec)
 """
 import glob, json, os, subprocess, sys
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 from .gfx import (W, H, FPS, SFX, BUTTER, INK, CREAM, WHITE, F_DIA, F_MON, font, paper, wall, rounded, sticker,
                   card, soft, load, place, url_bar)
 from .spec import load_spec, Clock
@@ -39,6 +39,7 @@ class Reel:
         self.url = url_bar(spec.URL) if spec.get("URL") else None
         self.hold = spec.get("HOLD", 1.3)
         self.zooms = [(self.T(a), self.T(b), z) for a, b, z in spec.get("ZOOMS", [])]
+        self._kinetic()
 
     # ---------- pops ----------
     def _pops(self):
@@ -57,18 +58,28 @@ class Reel:
             cw = b.get("width", 620)
             probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v", "-show_entries", "stream=width,height",
                                     "-of", "csv=p=0", self.s.path(b["src"])], capture_output=True, text=True).stdout.split(",")
-            ch = int(cw * int(probe[1]) / int(probe[0])) // 2 * 2
+            sw, shh = int(probe[0]), int(probe[1])
+            crop = ""
+            if b.get("crop"):   # (x, y, w, h) in source pixels — e.g. cut the status bar (time/battery)
+                cx_, cy_, sw, shh = b["crop"]; crop = f"crop={sw}:{shh}:{cx_}:{cy_},"
+            ch = int(cw * shh / sw) // 2 * 2
             n = int(round((z - a) * FPS)) + 2
             raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-ss", str(b.get("start", 0)), "-i", self.s.path(b["src"]), "-an",
-                                  "-vf", f"setpts=(PTS-STARTPTS)/{b.get('speed', 1.0)},fps={FPS},scale={cw}:{ch}",
+                                  "-vf", f"setpts=(PTS-STARTPTS)/{b.get('speed', 1.0)},fps={FPS},{crop}scale={cw}:{ch}",
                                   "-frames:v", str(n), "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True).stdout
             fs = cw * ch * 3
             frames = [raw[i * fs:(i + 1) * fs] for i in range(len(raw) // fs)]
-            self.brolls.append(dict(a=a, z=z, frames=frames, size=(cw, ch), y=b.get("y", 800), cap_y=b.get("cap_y", 1445)))
+            k = cw / sw   # blur boxes (x, y, w, h) in (cropped) source pixels -> card pixels; hides URL bars / logos
+            blur = [tuple(int(v * k) for v in (x, y, x + w, y + h)) for x, y, w, h in b.get("blur", [])]
+            self.brolls.append(dict(a=a, z=z, frames=frames, size=(cw, ch), y=b.get("y", 800), cap_y=b.get("cap_y", 1445),
+                                    blur=blur, wall=wall(b["wall"]) if b.get("wall") else None))
 
     def broll_frame(self, b, t):
         i = min(len(b["frames"]) - 1, int((t - b["a"]) * FPS))
-        return card(Image.frombuffer("RGB", b["size"], b["frames"][i], "raw", "RGB", 0, 1))
+        im = Image.frombuffer("RGB", b["size"], b["frames"][i], "raw", "RGB", 0, 1).copy()
+        for bx in b["blur"]:
+            im.paste(im.crop(bx).filter(ImageFilter.GaussianBlur(16)), bx[:2])
+        return card(im)
 
     # ---------- optional intro card: stop-motion frames + a label pop (e.g. "Day 5") + typed title ----------
     def _intro(self):
@@ -174,11 +185,11 @@ class Reel:
             ws = [x for x in CW if x["line"] == L]; cur = []
             for i, x in enumerate(ws):
                 if (L, i) in WSET:
-                    if cur: self.chunks.append({"text": " ".join(y["w"] for y in cur), "s": cur[0]["s"]}); cur = []
+                    if cur: self.chunks.append({"text": " ".join(y["w"] for y in cur), "s": cur[0]["s"], "words": cur}); cur = []
                     continue
                 cur.append(x)
                 if x["w"][-1] in ",.?:!" or len(cur) == 3 or i == len(ws) - 1 or (L, i + 1) in WSET:
-                    self.chunks.append({"text": " ".join(y["w"] for y in cur), "s": cur[0]["s"]}); cur = []
+                    self.chunks.append({"text": " ".join(y["w"] for y in cur), "s": cur[0]["s"], "words": cur}); cur = []
         ev = sorted([("c", c["s"], c) for c in self.chunks] + [("k", g[0], g) for g in self.kin], key=lambda e: e[1])
         ia = self.intro["a"] if self.intro else 1e9
         for i, (kind, s_, obj) in enumerate(ev):
@@ -187,6 +198,81 @@ class Reel:
             if kind == "c": obj["e"] = nxt
             else: obj[1] = nxt
         if self.chunks: self.chunks[-1]["e"] += self.s.get("HOLD", 1.3)
+
+    # ---------- kinetic captions (opt-in) ----------
+    # CAPTIONS = dict(font="Margarine-Regular.ttf", size=80, y=1130, key=[(line, "word"), ...], key_scale=1.3,
+    #                 faces="build/faces.json")
+    #   words appear one by one as she says them (no animation), key words butter + bigger,
+    #   each chunk sits in the free spot nearest (540, y) that clears pops, her face, the URL bar and the bottom 20%.
+    def _kinetic(self):
+        K = self.s.get("CAPTIONS"); self.kc = None
+        if not K: return
+        from .gfx import FONTS
+        fp = K["font"] if os.path.isabs(K["font"]) else os.path.join(FONTS, K["font"])
+        size = K.get("size", 80); fN = font(fp, size); fK = font(fp, int(size * K.get("key_scale", 1.3)))
+        keys = {(L, w.lower()) for L, w in K.get("key", [])}
+        # face track [(t, x0, y0, x1, y1)]; drop misdetections far below a head (shirt folds etc.)
+        self.faces = [f for f in (json.load(open(self.s.path(K["faces"]))) if K.get("faces") else [])
+                      if f[1] is not None and f[2] < K.get("face_max_top", 800)]
+        self.kY = K.get("y", 1130); sp = fN.getlength(" ")
+        asc = max(fN.getmetrics()[0], fK.getmetrics()[0]); lh = int(asc * 1.02)
+
+        def lay(its, maxw):   # -> (size, [xy per word]); greedy rows, centred
+            rows, cur, cw_ = [], [], 0
+            for i in its:
+                wd = i["f"].getlength(i["w"])
+                if cur and cw_ + sp + wd > maxw: rows.append(cur); cur, cw_ = [], 0
+                cur.append(i); cw_ += (sp if len(cur) > 1 else 0) + wd
+            rows.append(cur)
+            rw = [sum(i["f"].getlength(i["w"]) for i in r) + sp * (len(r) - 1) for r in rows]
+            Wc = int(max(rw)) + 30; xy = []
+            for ri, r in enumerate(rows):
+                x_ = (Wc - rw[ri]) / 2
+                for i in r: xy.append((x_, asc + ri * lh)); x_ += i["f"].getlength(i["w"]) + sp
+            return (Wc, lh * len(rows) + int(asc * 0.35)), xy
+
+        self.kc = []
+        for c in self.chunks:
+            its = []
+            for x in c["words"]:
+                k = (x["line"], x["w"].strip(",.?:!").lower()) in keys
+                its.append(dict(w=x["w"], f=fK if k else fN, col=BUTTER if k else WHITE, s=x["s"]))
+            # layouts: one row, two rows, one word per row — the best (position + layout) score wins
+            vars_ = [(0, lay(its, K.get("maxw", 960)))]
+            if len(its) > 1: vars_ += [(50, lay(its, 480)), (110, lay(its, 10))]
+            c2 = dict(s=c["s"], e=c["e"], its=its, cache={}); best = None
+            for pen, (size, xy) in vars_:
+                c2["size"] = size; r = self._kpos(c2)
+                if r and (best is None or r[0] + pen < best[0]): best = (r[0] + pen, r[1], size, xy)
+            if best is None:
+                print(f"! no free spot for caption at {c2['s']:.2f}"); best = (0, (W / 2, self.kY)) + vars_[0][1]
+            c2["pos"], c2["size"], c2["xy"] = best[1], best[2], best[3]
+            self.kc.append(c2)
+
+    def _kimg(self, c, n):
+        if n not in c["cache"]:
+            im = Image.new("RGBA", c["size"], (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+            for i, xy in list(zip(c["its"], c["xy"]))[:n]: d.text(xy, i["w"], font=i["f"], fill=i["col"], anchor="ls")
+            c["cache"][n] = soft(im)
+        return c["cache"][n]
+
+    def _kpos(self, c):
+        s0, s1 = c["s"], c["e"]; cw, ch = c["size"][0] + 20, c["size"][1]
+        for b in self.brolls:
+            if b["a"] - 0.1 <= s0 < b["z"]: return 0, (W / 2, b["cap_y"])
+        obs = [(x0 - 20, y0 - 20, x1 + 20, y1 + 20) for t0, t1, x0, y0, x1, y1 in self.boxes if t0 < s1 and t1 > s0]
+        obs += [(x - 30, y - 30, x2 + 30, y2 + 40) for t, x, y, x2, y2 in self.faces if s0 - 0.2 <= t <= s1 + 0.2]
+        if self.url is not None and self.url_t < s1:
+            uy = self.s.get("URL_Y", 300); obs.append((40, uy - 100, W - 40, uy + 100))
+        best = None
+        for dy in (0, 70, -60, 140, 210, 280, 350, -120):
+            for x in (540, 620, 460, 700, 380, 780, 300, 860, 220):
+                y = self.kY + dy
+                if x - cw / 2 < 20 or x + cw / 2 > W - 20 or y + ch / 2 > SAFE_BOTTOM: continue
+                if any(a < x + cw / 2 and c_ > x - cw / 2 and b_ < y + ch / 2 and d > y - ch / 2 for a, b_, c_, d in obs): continue
+                sc = abs(dy) + 0.5 * abs(x - 540)
+                if best is None or sc < best[0]: best = (sc, x, y)
+        return (best[0], (best[1], best[2])) if best else None
 
     def cap_pos(self, t, cw, ch):
         if t < self.hook_end: return W / 2, CAP_Y
@@ -213,7 +299,7 @@ class Reel:
         if self.intro and self.intro["a"] <= t < self.intro["b"]: fr = self.intro_frame(t)
         for b in self.brolls:
             if b["a"] <= t < b["z"]:
-                fr = self.wall.copy(); place(fr, self.broll_frame(b, t), W / 2, b["y"])
+                fr = (b["wall"] or self.wall).copy(); place(fr, self.broll_frame(b, t), W / 2, b["y"])
         for im, t0, t1, x, y in self.pops:
             if t0 <= t < t1: place(fr, im, x, y)
         if self.url and t >= self.url_t: place(fr, self.url, W / 2, self.s.get("URL_Y", 300))
@@ -221,6 +307,11 @@ class Reel:
             if g0 <= t < g1:
                 for im, x_, y_, ta in items:
                     if t >= ta: fr.alpha_composite(im, (int(x_), int(y_)))
+        if self.kc is not None:
+            for c in self.kc:
+                if c["s"] <= t < c["e"]:
+                    n = max(1, sum(1 for i in c["its"] if i["s"] <= t)); place(fr, self._kimg(c, n), *c["pos"]); break
+            return fr
         for c in self.chunks:
             if c["s"] <= t < c["e"]:
                 ci = self._cap(c["text"]); place(fr, ci, *self.cap_pos(t, ci.width, ci.height)); break

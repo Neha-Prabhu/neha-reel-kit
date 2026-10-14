@@ -11,11 +11,18 @@
 - Hook: max 3 small images, around her, face visible, top ~440 px free for the text hook; clear before the payoff word.
 - Background-removed cutouts get a white outline (otherwise they blend into the room). Photos/pins: rounded corners, no border.
 - Pops land on the word ("like *this* devilish heart"); pop where she points/holds; keep images she marks `keep-bg` intact.
+- Pop position: MIDDLE ROW of the IG 3x3 grid (in her line of vision, not low), left or right column, alternating, always on
+  the side away from her face (tools/face_track.py). Several listing screenshots in one reel → rebuild as identical cards
+  (tools/pawmuch_card.py), never mixed crops.
+- Funny cutaways ("adopting a kid — I meant kitten", "I see the resemblance" → Toothless): background-removed stickers
+  with a white outline, popped with SFX, gone after the beat.
 
 **Captions**
 - White Diagramm UltraBold Italic 60, soft shadow (no outlines), ≤3 words, always above the bottom 20% (IG UI).
 - Weighted words = the nouns/items/numbers (e.g. "devilish heart", "17 supplies"), NOT adverbs like "genuinely".
   Diagramm, butter yellow, soft shadow, bigger; placed freely off her face; tight line spacing.
+- Kinetic captions (when she asks for them, e.g. Margarine on the cats reel): words appear as she says them (no motion),
+  key nouns/names butter + bigger, each chunk sits in the free space around the pops/her face (CAPTIONS in the spec).
 - One caption element on screen at a time. Captions must use her EXACT spoken words — get the .srt or a transcript.
 
 **Layout / brand**
