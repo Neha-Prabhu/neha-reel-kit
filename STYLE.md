@@ -10,7 +10,8 @@
 - Instant (no grow-in), borderless, straight (no tilt), never over her face, pop SFX on the landing frame.
 - Hook: max 3 small images, around her, face visible, top ~440 px free for the text hook; clear before the payoff word.
 - Background-removed cutouts get a white outline (otherwise they blend into the room). Photos/pins: rounded corners, no border.
-- Pops land on the word ("like *this* devilish heart"); pop where she points/holds; keep images she marks `keep-bg` intact.
+- Pops land on the word ("like *this* devilish heart"); pop where she points/holds.
+- Sticker vs photo is decided by the FILE NAME: `<name>_sticker` = background removed + white outline; anything else = normal photo pop, background kept.
 - Pop position: MIDDLE ROW of the IG 3x3 grid (in her line of vision, not low), left or right column, alternating, always on
   the side away from her face (tools/face_track.py). Several listing screenshots in one reel → rebuild as identical cards
   (tools/pawmuch_card.py), never mixed crops.

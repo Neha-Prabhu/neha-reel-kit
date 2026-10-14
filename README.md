@@ -27,7 +27,7 @@ python -m reelkit.render   reels/<NN>_<slug>/reel.py            # build/final.mp
 
 ## Asset naming (send these with every reel)
 `aroll.MOV`, `aroll.srt`, `NN_<what>.png` where NN = the script line it belongs to
-(`01_hook_lanterns.png`, `09_garland.jpg`), suffix `_keep-bg` = never remove background, `_cutout` = remove it.
+(`01_hook_lanterns.png`, `09_garland.jpg`), suffix `_sticker` = sticker (background removed + white outline, e.g. `00_kid_sticker.jpg`); no suffix = normal photo pop, background kept. (Old reels: `_cutout` = sticker, `_keep-bg` = photo.)
 
 ## Skills
 `skills/` holds the source of the Claude skills that use this kit (reel-edit). Save them in Claude via the skill card; this copy is for versioning.

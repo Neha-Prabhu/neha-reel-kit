@@ -16,7 +16,7 @@ HOOK_END = None                  # time the hook pops clear (captions stay centr
 
 POPS = [
     # dict(img="img/01_hook_x.png", w=330, r=22, at=0.06, until=("w", 0, "are"), x=225, y=1130),
-    # dict(img="img/06_x_cutout.png", w=300, outline=10, at=("w", 6, "this"), until=("cut", 6), x=225, y=840),
+    # dict(img="img/06_x_sticker.png", w=300, outline=10, at=("w", 6, "this"), until=("cut", 6), x=225, y=840),
 ]
 BROLL = [
     # dict(src="src/04_scroll.mov", at=("cut", 2), until=("cut", 3), start=0.0, speed=1.0, width=620, y=800, cap_y=1445),
