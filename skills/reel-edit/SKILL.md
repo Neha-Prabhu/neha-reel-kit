@@ -26,7 +26,7 @@ Neha shoots her own A-roll; you do the edit. The result must look hand-made by a
 
 ## 1. Intake (ask once, one message, only for what's missing)
 - Original A-roll. Her exact words: an .srt if she has one; otherwise transcribe offline (above) and show her the lines you're unsure of with draft 1 — she confirms or corrects in feedback. Never caption from the script.
-- B-roll / screen recordings and images, named by the line they belong to: `NN_<what>.png`. **`<name>_sticker`** (e.g. `kid_sticker.jpg`) = make it a sticker (background removed + white outline). Any other image is a normal photo pop: background kept, rounded corners, no border. Don't decide this yourself — the file name tells you; if an image she clearly means as a joke cutout has no `_sticker`, ask. (Older reels used `_cutout` / `_keep-bg` — treat `_cutout` like `_sticker`.)
+- B-roll / screen recordings and images, named by the line they belong to: `NN_<what>.png`. **`<name>_sticker`** (e.g. `kid_sticker.jpg`) = make it a sticker (background removed + white outline). Any other image is a normal photo pop: background kept, rounded corners, no border. Don't decide this yourself — the file name tells you. (Older reels used `_cutout` / `_keep-bg` — treat `_cutout` like `_sticker`.)
 - Theme/colours or wall texture if any, URL if the reel ends on a link, text hook only if she has one (never invent one), caption font if she wants a special one for this reel.
 
 ## 2. Rough cut — pacing
