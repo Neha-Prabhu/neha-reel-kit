@@ -10,7 +10,8 @@ Neha shoots her own A-roll; you do the edit. The result must look hand-made by a
 ## Tools
 - Use **neha-reel-kit** (private GitHub repo on her account): attach it with add_repo and clone; if GitHub isn't reachable, ask her to upload `neha-reel-kit.zip`. `README.md` has the commands, `STYLE.md` the full rule list.
 - Needs python3, pillow, numpy, scipy, ffmpeg (`pip install ... --break-system-packages`).
-- Each reel = a folder copied from `reels/_template` with a `reel.py` spec; media goes in `src/` and `img/`.
+- Each reel = a folder copied from `reels/_template` with a `reel.py` spec; media goes in `src/` and `img/` (local only, never committed).
+- Reusable assets live in `assets/` (fonts, sfx, textures, overlays, logos-and-ui, intro) — check `assets/README.md` before asking her for something she may have sent before.
 
 ## 1. Intake (ask once, one message, only for what's missing)
 - Original A-roll + its auto-caption **.srt** exported from Edits/CapCut — gives her exact words and timings. No .srt → ask her to paste exactly what she said. Never caption from the script.
@@ -41,4 +42,5 @@ Neha shoots her own A-roll; you do the edit. The result must look hand-made by a
 ## 4. Feedback rounds
 - Change only what she asks for; if she asks for a summary, summarise before editing.
 - After each render, list what changed in a few bullets and flag anything uncertain (word timing, which image goes where) as a question.
-- New lasting preference → add it to `STYLE.md` in the kit and commit. Final reel → commit its spec + img/ (not src/ or build/).
+- New lasting preference → add it to `STYLE.md` in the kit and commit. Final reel → commit its `reel.py` spec only.
+- **Assets she sends:** if it's reusable across videos/series (font, SFX, texture, overlay/green-screen, logo, UI animation), save it to `assets/<category>/` with a snake_case name, add a line to `assets/README.md`, commit and push. If it's specific to one script (that reel's photos, recordings, A-roll), keep it local in the reel folder — never commit it. Your call; when unsure, ask "reuse later?".

@@ -1,9 +1,14 @@
+# per-reel media stays out of git (script-specific, often huge)
 reels/*/src/
 reels/*/build/
+reels/*/img/
 __pycache__/
 *.mp4
 *.mov
 *.MOV
 *.MP4
 *.wav
-!assets/sfx/*.wav
+# ...except reusable assets
+!assets/**/*.mp4
+!assets/**/*.mov
+!assets/**/*.wav

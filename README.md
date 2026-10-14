@@ -6,8 +6,8 @@ One spec file per reel → rough cut → full edit (B-roll, pops, captions, URL,
 
 ```
 reelkit/        roughcut.py · words.py · render.py · gfx.py · spec.py
-assets/         fonts/ sfx/ textures/ intro/ (stop-motion desk builder, heads, theme props)
-reels/          _template/ + one folder per reel (reel.py + img/ in git; src/ and build/ are not)
+assets/         reusable only: fonts/ sfx/ textures/ overlays/ logos-and-ui/ intro/  (catalog: assets/README.md)
+reels/          _template/ + one folder per reel (only reel.py in git; img/ src/ build/ stay local)
 tools/cutout.py white-background removal for website cards
 ```
 
@@ -29,3 +29,7 @@ python -m reelkit.render   reels/<NN>_<slug>/reel.py            # build/final.mp
 
 ## Skills
 `skills/` holds the source of the Claude skills that use this kit (reel-edit). Save them in Claude via the skill card; this copy is for versioning.
+
+## Assets rule
+Reusable things she sends (fonts, SFX, textures, overlays, logos/UI) → `assets/<category>/`, listed in `assets/README.md`, committed and pushed.
+Anything specific to one script stays out of git.

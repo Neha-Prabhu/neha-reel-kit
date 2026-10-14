@@ -1,5 +1,5 @@
 """Day 5 — Halloween origami (origami.me/halloween-origami). Final = "pass 3i": orange theme, 3-pop hook, no zooms.
-Media (src/, build/) is not in git — re-upload the A-roll + scroll recording to rebuild."""
+Media (src/, img/, build/) is not in git (script-specific) — kept as an example spec."""
 
 AROLL = "src/halloween_Aroll.MP4"
 SRT = None                       # next time: export auto-captions .srt from Edits on the original A-roll
