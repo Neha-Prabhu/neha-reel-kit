@@ -9,6 +9,7 @@ reelkit/        roughcut.py · words.py · render.py · gfx.py · spec.py
 assets/         reusable only: fonts/ sfx/ textures/ overlays/ logos-and-ui/ intro/  (catalog: assets/README.md)
 reels/          _template/ + one folder per reel (only reel.py in git; img/ src/ build/ stay local)
 tools/cutout.py white-background removal for website cards
+tools/pawmuch_card.py  rebuild Pawmuch listing screenshots as identical card pops (same size/layout)
 ```
 
 ## Per reel
