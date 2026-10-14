@@ -13,8 +13,8 @@ TEXTURES = os.path.join(KIT, "assets", "textures")
 BLUE = (142, 166, 200); BUTTER = (247, 226, 122); LAVENDER = (226, 198, 242)
 INK = (38, 32, 44); CREAM = (250, 243, 228); WHITE = (255, 255, 255)
 
-F_DIA = os.path.join(FONTS, "Diagramm-UltraBoldItalic.ttf")   # captions, "Day N", big words
-F_MON = os.path.join(FONTS, "Monigue.otf")                     # series title
+F_DIA = os.path.join(FONTS, "Diagramm-UltraBoldItalic.ttf")   # captions, intro label, big words
+F_MON = os.path.join(FONTS, "Monigue.otf")                     # intro / title text
 F_PRO = os.path.join(FONTS, "ProvidenceSans.ttf")              # handwritten accent (use sparingly)
 F_URL = os.path.join(FONTS, "Poppins-Medium.ttf")              # URL bar
 

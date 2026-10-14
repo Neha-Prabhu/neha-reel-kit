@@ -1,7 +1,7 @@
-# House style — learned from Days 3–5 feedback
+# House style — learned from feedback on her reels (applies to any series)
 
 **Pacing / audio**
-- Remove every pause; 1.1x speed; "Day N of…" line and list lines 1.2x. Never cut a line's last word.
+- Remove every pause; 1.1x speed; list lines and fast throwaway lines 1.2x. Never cut a line's last word.
 - J cut = exactly 1 frame. Longer shows her looking away before the next line.
 - Audio: mono → trim + atempo per segment → +11 dB → light limiter, single encode. No loudnorm (pumps), no rubberband (robotic).
 - Downscale 4K to 1080x1920 before any trimming.
@@ -19,12 +19,12 @@
 - One caption element on screen at a time. Captions must use her EXACT spoken words — get the .srt or a transcript.
 
 **Layout / brand**
-- Brand: blue wall (142,166,200), butter (247,226,122), lavender, ink; fonts Diagramm (captions/Day N), Monigue (title).
+- Brand: blue wall (142,166,200), butter (247,226,122), lavender, ink; fonts Diagramm (captions, labels, weighted words), Monigue (titles).
 - Themed reels may swap the wall everywhere (e.g. Halloween: orange texture in intro AND B-roll).
 - Screen recordings: white rounded phone card on the wall, top clear of the IG "Reels" header, URL bars/logos blurred.
-- Intro: stop-motion desk, "Day N" pop + typed title; themed props allowed per reel.
+- Intro card (optional, only if the series uses one): stop-motion desk, label pop (e.g. "Day 5") + typed title; themed props allowed.
 - URL pops above her head on "here it is" — no typing sound. Hold last frame ~1.3 s.
-- No text hook unless she supplies the words. Zoom cuts: optional, she preferred without on Day 5.
+- No text hook unless she supplies the words. Zoom cuts: optional, she preferred without so far.
 
 **Process**
 - Rough cut first (pacing only) → full edit → one consolidated feedback round.

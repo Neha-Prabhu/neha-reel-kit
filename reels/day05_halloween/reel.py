@@ -26,7 +26,8 @@ SEGS = [
 
 DAY = 5
 WALL = "orange_soft.jpg"         # B-roll wall (assets/textures). None = classic blue
-INTRO = dict(line=2, frames="build/intro_frames", bg=(176, 84, 40), title_y=232)
+INTRO = dict(line=2, frames="build/intro_frames", label="Day 5", title="Things I Found on the Internet Instead of Doomscrolling",
+             bg=(176, 84, 40), title_y=232)
 #   build intro frames:  python assets/intro/build_intro.py --out <tmp> --wall assets/textures/orange_soft.jpg --witch-hat
 #                        python assets/intro/halloween_props.py <tmp> reels/day05_halloween/build/intro_frames
 

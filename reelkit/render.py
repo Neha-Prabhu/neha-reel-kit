@@ -12,6 +12,7 @@ House style (all from Neha's feedback, Days 3-5):
   * exactly ONE caption element on screen at a time (each ends when the next starts)
   * B-roll recordings: white rounded phone card on the wall, top clear of the IG "Reels" header
   * URL pops above her head on "here it is", no typing sound; last frame held ~1.3 s
+  * intro card is optional — only when the reel/series uses one (INTRO in the spec)
 """
 import glob, json, os, subprocess, sys
 from PIL import Image, ImageDraw
@@ -69,7 +70,7 @@ class Reel:
         i = min(len(b["frames"]) - 1, int((t - b["a"]) * FPS))
         return card(Image.frombuffer("RGB", b["size"], b["frames"][i], "raw", "RGB", 0, 1))
 
-    # ---------- Day N intro: stop-motion desk frames + "Day N" pop + typed series title ----------
+    # ---------- optional intro card: stop-motion frames + a label pop (e.g. "Day 5") + typed title ----------
     def _intro(self):
         it = self.s.get("INTRO")
         self.intro = None
@@ -84,11 +85,11 @@ class Reel:
             fr = bg.copy()
             c = sticker(rounded(Image.open(p).convert("RGB").resize((int(W * SC), int(H * SC)), Image.LANCZOS), 28))
             fr.alpha_composite(c, ((W - c.width) // 2, IY - 36)); frames.append(fr)
-        fd = font(F_DIA, int(175 * SC)); txt = f"Day {self.s.DAY}"
+        fd = font(F_DIA, int(175 * SC)); txt = it.get("label") or (f"Day {self.s.DAY}" if self.s.get("DAY") is not None else "")
         dimg = Image.new("RGBA", (600, 260), (0, 0, 0, 0)); dd = ImageDraw.Draw(dimg)
         dd.text((306, 26), txt, font=fd, fill=INK, anchor="ma"); dd.text((300, 20), txt, font=fd, fill=BUTTER, anchor="ma")
-        day = dimg.crop(dimg.getbbox()).rotate(-4, expand=True, resample=Image.BICUBIC)
-        title = self.s.get("TITLE", "Things I Found on the Internet Instead of Doomscrolling")
+        day = dimg.crop(dimg.getbbox()).rotate(-4, expand=True, resample=Image.BICUBIC) if txt else None
+        title = it.get("title") or self.s.get("TITLE", "")
         ft = font(F_MON, int(98 * SC)); lines, cur = [], ""
         for w_ in title.split():
             c_ = (cur + " " + w_).strip()
@@ -97,7 +98,7 @@ class Reel:
         lines.append(cur)
         # typing: first title word -> just before the cut, weighted by syllables
         from .words import syllables
-        tw = title.split(); first = tw[0]
+        tw = title.split() or [""]; first = tw[0]
         try: t0 = self.T(("w", L, first))
         except KeyError: t0 = a + 0.25
         t1 = b - 0.12; tot = sum(syllables(w) for w in tw); acc = 0; WT = []
@@ -109,7 +110,7 @@ class Reel:
     def intro_frame(self, t):
         I = self.intro
         fr = I["frames"][min(len(I["frames"]) - 1, int((t - I["a"]) * 8))].copy()
-        if t >= I["day_t"]: place(fr, I["day"], W // 2, I["IY"] + int(130 * I["SC"]))
+        if I["day"] is not None and t >= I["day_t"]: place(fr, I["day"], W // 2, I["IY"] + int(130 * I["SC"]))
         n = 0
         for i, (w_, ts) in enumerate(I["WT"]):
             if t < ts: break
@@ -227,7 +228,7 @@ class Reel:
 
     def sfx_list(self):
         sfx = [("pop.mp3", t0, 0.22) for _, t0, *_ in self.pops]
-        if self.intro: sfx.append(("pop.mp3", self.intro["day_t"], 0.30))
+        if self.intro and self.intro["day"] is not None: sfx.append(("pop.mp3", self.intro["day_t"], 0.30))
         sfx += [("pop.mp3", b["a"], 0.20) for b in self.brolls]
         if self.url: sfx.append(("pop.mp3", self.url_t, 0.32))
         sfx += [(f, self.T(at), v) for f, at, v in self.s.get("EXTRA_SFX", [])]

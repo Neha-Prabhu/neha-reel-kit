@@ -1,5 +1,5 @@
-"""Stop-motion desk intro for "Things I Found on the Internet Instead of Doomscrolling".
-Renders 24 text-free frames (8 fps) — the reel engine adds the "Day N" pop + typed title on top.
+"""Stop-motion desk intro card (bobble-head at the desk). Optional — use it for any series that wants an intro.
+Renders 24 text-free frames (8 fps) — the reel engine adds the label pop (e.g. "Day 5") + typed title on top.
 
   python build_intro.py --out frames_default                          # classic blue wall
   python build_intro.py --out frames_hw --wall ../textures/orange_soft.jpg --witch-hat
@@ -16,7 +16,7 @@ if _A.preview: os.environ["PREVIEW"] = _A.preview
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONTS = os.path.join(HERE, "..", "fonts")
 WITCH_HAT = _A.witch_hat
-"""Stop-motion bobble-head intro for 'Day 3 — Things I Found on the Internet Instead of Doomscrolling'."""
+# (original Day 3 builder below; text is drawn by the engine, NOTEXT is always on)
 import math, random, subprocess, os
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -381,8 +381,8 @@ pegboard = make_pegboard()
 pegboard = pegboard.resize((int(pegboard.width * 0.74), int(pegboard.height * 0.74)), Image.LANCZOS)
 lamp, clock_base, laptop, can, books = make_lamp(), make_clock(), make_laptop(), make_can(), make_books()
 desk, torso, legs = make_desk(), make_torso(), make_legs()
-day = text_block("Day 3", F_DAY, 175, BUTTER, sw=0)
-title = text_block("Things I Found on the Internet Instead of Doomscrolling", F_TITLE, 98, CREAM,
+day = text_block("Label", F_DAY, 175, BUTTER, sw=0)   # unused: the engine draws the label
+title = text_block("Title", F_TITLE, 98, CREAM,   # unused: the engine draws the title
                    stroke=INK, sw=0, maxw=940)
 
 NECK_K = {k: 1.0 for k in "678"}

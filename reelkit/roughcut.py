@@ -7,7 +7,7 @@ Writes into the reel folder: build/aroll_1080.mov, build/roughcut.mp4, build/voi
 
 House rules baked in (from Days 3-5):
   * 4K is downscaled to 1080x1920 FIRST (a trim graph on 4K gets OOM-killed)
-  * speed 1.1x by default; the "Day N" line and list lines 1.2x
+  * speed 1.1x by default; list lines and fast throwaway lines 1.2x
   * audio: mono -> per-segment trim + atempo -> concat -> +11 dB -> light limiter, ONE encode.
     (never loudnorm = pumping; never rubberband = robotic/double voice)
   * J cut = ONE frame (next line's audio starts 1/30 s before the picture cuts) — more shows her looking away
