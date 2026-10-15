@@ -38,17 +38,19 @@ INTRO = None
 HOOK_END = None
 
 # hook: knife-bunny sticker (bg removed -> white outline) beside her head from the first frame; clears at the end of the hook line
-# listing card: her Pawmuch screenshot cropped to the card, lands on "rabbit", stays while she reads out his details.
-#   middle row of the 3x3 grid (y 640-1280), right column = away from her face (build/faces.json)
 POPS = [
     dict(img="img/01_hook_knife_bunny_cutout.png", w=370, outline=10, at=0.03, until=("cut", 0), x=860, y=650),
     # "kittens and dogs": her two Pawmuch listing screenshots (normal photo pops), middle row, kittens left / dog right
     #   (her face is just right of centre here), both up until Snow's card lands on "rabbit"
-    dict(img="img/01_kittens_ss.png", w=300, r=22, at=("w", 1, "kittens"), until=("w", 2, "rabbit"), x=200, y=975),
-    dict(img="img/01_dog_ss.png",     w=300, r=22, at=("w", 1, "dogs"),    until=("w", 2, "rabbit"), x=920, y=975),
-    dict(img="img/02_listing_card_keep-bg.png", w=360, r=22, at=("w", 2, "rabbit"), until=("cut", 3), x=880, y=975),
+    dict(img="img/01_kittens_ss.png", w=300, r=22, at=("w", 1, "kittens"), until=("w", 2, "up"), x=200, y=975),
+    dict(img="img/01_dog_ss.png",     w=300, r=22, at=("w", 1, "dogs"),    until=("w", 2, "up"), x=920, y=975),
 ]
-BROLL = []
+# "...posting a rabbit over there" -> full-screen: Snow's whole Pawmuch listing as a phone card on the pink wall,
+#   then straight back to her for "His name is Snow, he's from Greater Noida" (still image -> src/02_snow_listing_still.mp4)
+BROLL = [
+    dict(src="src/02_snow_listing_still.mp4", at=("w", 2, "up"), until=("w", 2, "His"),
+         crop=(0, 196, 1180, 2200), width=650, y=805, cap_y=1478, wall="pink_paper.jpg"),
+]
 WEIGHTED = []
 # kinetic captions in Margarine: words appear as she says them, key words butter + bigger, auto-placed around the pops / her face
 CAPTIONS = dict(font="Margarine-Regular.ttf", size=78, y=1140, key_scale=1.3, faces="build/faces.json",
