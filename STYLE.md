@@ -12,6 +12,8 @@
 - Background-removed cutouts get a white outline (otherwise they blend into the room). Photos/pins: rounded corners, no border.
 - Pops land on the word ("like *this* devilish heart"); pop where she points/holds.
 - Sticker vs photo is decided by the FILE NAME: `<name>_sticker` = background removed + white outline; anything else = normal photo pop, background kept.
+- Two modes: POP over the A-roll vs FULL FOCUS (screen recording / image takes over: wall + white phone card, centred,
+  ~620-650 wide, centre y ~800-830, captions under it). Never mix them up.
 - Pop position: MIDDLE ROW of the IG 3x3 grid (in her line of vision, not low), left or right column, alternating, always on
   the side away from her face (tools/face_track.py). Several listing screenshots in one reel → rebuild as identical cards
   (tools/pawmuch_card.py), never mixed crops.
