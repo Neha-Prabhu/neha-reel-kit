@@ -79,3 +79,5 @@ URL_AT = ("w", 12, "Pawmuch")
 URL_Y = 300
 HOLD = 1.3
 ZOOMS = []
+# slow zooms (trial): A-roll in ~2-3 s blocks, alternating slow zoom-in / zoom-out, resets on the line cuts
+SLOW_ZOOM = dict(amount=1.07, min=2.0, pattern="iio")

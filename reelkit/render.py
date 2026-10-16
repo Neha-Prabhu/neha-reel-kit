@@ -39,6 +39,7 @@ class Reel:
         self.url = url_bar(spec.URL) if spec.get("URL") else None
         self.hold = spec.get("HOLD", 1.3)
         self.zooms = [(self.T(a), self.T(b), z) for a, b, z in spec.get("ZOOMS", [])]
+        self.slow = self._slow_zooms(spec.get("SLOW_ZOOM"))
         self._kinetic()
 
     # ---------- pops ----------
@@ -290,6 +291,39 @@ class Reel:
             if not hits(cx, cy) and cy + ch / 2 <= SAFE_BOTTOM: return cx, cy
         return W / 2, CAP_Y
 
+    # ---------- slow zooms: A-roll split into ~2-3 s blocks at picture cuts; each block eases in (or back out) ----------
+    def _slow_zooms(self, Z):
+        """SLOW_ZOOM = dict(amount=1.07, min=2.0, pattern="iio", skip_lines=[...]) -> [(t0, t1, z0, z1, ax, ay)].
+        Lines are merged into blocks of >= min s (never split). Blocks follow the pattern (in, in, out, ...):
+        in->in resets back to 1.0 on the line cut (the jump cut hides it), in->out / out->in flow on smoothly.
+        Anchored on her face (mean face-track centre over the block) so she stays put while the room moves."""
+        if not Z: return []
+        amt, lo, hi = Z.get("amount", 1.07), Z.get("min", 2.0), Z.get("max", 3.2)
+        cuts = [0.0] + self.cuts["picture_cuts"] + [self.cuts["duration"] + self.hold]
+        skip = set(Z.get("skip_lines", []))
+        busy = [(b["a"], b["z"]) for b in self.brolls] + ([(self.intro["a"], self.intro["b"])] if self.intro else [])
+        lines = [(cuts[i], cuts[i + 1]) for i in range(len(cuts) - 1)
+                 if i not in skip and not any(a < cuts[i + 1] - 0.05 and b > cuts[i] + 0.05 for a, b in busy)]
+        blocks, cur = [], None
+        for a, b in lines:   # merge touching lines into blocks of >= lo s; split anything longer than hi
+            if cur and abs(cur[1] - a) < 1e-3 and cur[1] - cur[0] < lo: cur[1] = b
+            else:
+                if cur: blocks.append(cur)
+                cur = [a, b]
+        if cur: blocks.append(cur)
+        out = blocks   # never split inside a line: a reset mid-sentence reads as a glitch
+        faces = [f for f in json.load(open(self.s.path("build/faces.json")))
+                 if f[1] is not None and f[2] < 800] if os.path.exists(self.s.path("build/faces.json")) else []
+        res = []
+        for i, (a, b) in enumerate(out):
+            fs = [f for f in faces if a <= f[0] <= b]
+            ax = sum((f[1] + f[3]) / 2 for f in fs) / len(fs) if fs else W / 2
+            ay = sum((f[2] + f[4]) / 2 for f in fs) / len(fs) if fs else 760
+            pat = Z.get("pattern", "iio")   # i = slow zoom in, o = slow zoom out; i->i = reset (punch back) on the cut
+            z0, z1 = (1.0, amt) if pat[i % len(pat)] == "i" else (amt, 1.0)
+            res.append((a, b, z0, z1, ax, ay))
+        return res
+
     # ---------- one frame ----------
     def frame(self, t, base):
         fr = base
@@ -297,6 +331,11 @@ class Reel:
             if z0 <= t < z1:
                 ax, ay = self.s.get("ZOOM_ANCHOR", (540, 700))
                 fr = fr.crop((int(ax - ax / zs), int(ay - ay / zs), int(ax + (W - ax) / zs), int(ay + (H - ay) / zs))).resize((W, H), Image.LANCZOS)
+        for a, b, z0, z1, ax, ay in self.slow:
+            if a <= t < b:
+                u = (t - a) / (b - a); u = u * u * (3 - 2 * u)          # ease in-out
+                zs = z0 + (z1 - z0) * u
+                fr = fr.resize((W, H), Image.BICUBIC, box=(ax - ax / zs, ay - ay / zs, ax + (W - ax) / zs, ay + (H - ay) / zs))
         if self.intro and self.intro["a"] <= t < self.intro["b"]: fr = self.intro_frame(t)
         for b in self.brolls:
             if b["a"] <= t < b["z"]:
