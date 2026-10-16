@@ -50,6 +50,8 @@ CARD_W = 500                     # cards from tools/pawmuch_card.py, all identic
 CY = 1020
 L_X, R_X = 262, 818
 POPS = [
+    # text hook (mockup C, built by make_hook.py): top, clear of the IG header, through the opening line, no pop sound
+    dict(img="img/00_hook.png", at=0.0, until=("cut", 0), x=540, y=355, sfx=False),
     dict(img="img/02_nacho_taco_card.png", w=400, at=("w", 1, "Nacho"),  until=("cut", 2), x=215, y=CY),
     dict(img="img/04_hotchy_card.png",     w=400, at=("w", 3, "Hotchy"), until=("cut", 4), x=215, y=CY),
     dict(img="img/05_milo_card.png",       w=CARD_W, at=("w", 5, "Milo"),   until=("cut", 5), x=R_X, y=CY - 100),
