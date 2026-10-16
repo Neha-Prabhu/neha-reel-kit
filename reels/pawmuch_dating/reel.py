@@ -50,8 +50,8 @@ CARD_W = 500                     # cards from tools/pawmuch_card.py, all identic
 CY = 1020
 L_X, R_X = 262, 818
 POPS = [
-    dict(img="img/02_nacho_taco_card.png", w=CARD_W, at=("w", 1, "Nacho"),  until=("cut", 2), x=L_X, y=CY),
-    dict(img="img/04_hotchy_card.png",     w=CARD_W, at=("w", 3, "Hotchy"), until=("cut", 4), x=L_X, y=CY),
+    dict(img="img/02_nacho_taco_card.png", w=400, at=("w", 1, "Nacho"),  until=("cut", 2), x=215, y=CY),
+    dict(img="img/04_hotchy_card.png",     w=400, at=("w", 3, "Hotchy"), until=("cut", 4), x=215, y=CY),
     dict(img="img/05_milo_card.png",       w=CARD_W, at=("w", 5, "Milo"),   until=("cut", 5), x=R_X, y=CY - 100),
     dict(img="img/06_poppy_card.png",      w=CARD_W, at=("w", 6, "this"),   until=("cut", 7), x=L_X, y=CY),
     # ending: her Pawmuch homepage screenshot (desktop hero card, nav cropped) under the URL bar
@@ -66,7 +66,7 @@ BROLL = [   # jump cuts at near-real speed (one scroll, open a profile, Apply) i
     dict(_B, at=("w", 10, "apply"),  until=("cut", 10),         start=16.9, speed=1.0),   # Apply to adopt tap
 ]
 WEIGHTED = []
-CAPTIONS = dict(font="Margarine-Regular.ttf", size=78, y=1140, key_scale=1.3, maxw=1040, faces="build/faces.json",
+CAPTIONS = dict(font="Margarine-Regular.ttf", size=72, y=1140, key_scale=1.3, maxw=1040, faces="build/faces.json",
                 key=[(1, "Nacho"), (1, "Taco"), (2, "nacho"), (2, "ears"),
                      (2, "taco"), (2, "shell"), (3, "Hotchy"), (3, "Potchy"), (4, "diva"), (5, "Milo"),
                      (5, "Cuddle"), (5, "Inspector"), (7, "CEO"), (8, "real"), (8, "animals"),

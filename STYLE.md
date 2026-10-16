@@ -24,7 +24,7 @@
 - White Diagramm UltraBold Italic 60, soft shadow (no outlines), ≤3 words, always above the bottom 20% (IG UI).
 - Weighted words = the nouns/items/numbers (e.g. "devilish heart", "17 supplies"), NOT adverbs like "genuinely".
   Diagramm, butter yellow, soft shadow, bigger; placed freely off her face; tight line spacing.
-- Kinetic captions (when she asks for them, e.g. Margarine on the cats reel): words appear as she says them (no motion),
+- Kinetic captions (when she asks for them, e.g. Margarine on the cats reel; size ~72, 78 felt huge): words appear as she says them (no motion),
   key nouns/names butter + bigger, each chunk sits in the free space around the pops/her face (CAPTIONS in the spec).
 - One caption element on screen at a time. Captions must use her EXACT spoken words — get the .srt or a transcript.
 
