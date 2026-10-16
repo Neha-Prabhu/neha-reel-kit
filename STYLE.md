@@ -32,6 +32,8 @@
 - Brand: blue wall (142,166,200), butter (247,226,122), lavender, ink; fonts Diagramm (captions, labels, weighted words), Monigue (titles).
 - Themed reels may swap the wall everywhere (e.g. Halloween: orange texture in intro AND B-roll).
 - Screen recordings: white rounded phone card on the wall, top clear of the IG "Reels" header, URL bars/logos blurred.
+- Long screen recordings: don't speed one run up to fit (confusing). Jump-cut it instead: ~1 s of one scroll, then ~1 s of the
+  action the line names (opening a profile, tapping Apply), each at near-real speed (1-2x).
 - Intro card (optional, only if the series uses one): stop-motion desk, label pop (e.g. "Day 5") + typed title; themed props allowed.
 - URL pops above her head on "here it is" — no typing sound. Hold last frame ~1.3 s.
 - No text hook unless she supplies the words. Zoom cuts: optional, she preferred without so far.
