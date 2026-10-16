@@ -54,15 +54,15 @@ POPS = [
     dict(img="img/04_hotchy_card.png",     w=CARD_W, at=("w", 3, "Hotchy"), until=("cut", 4), x=L_X, y=CY),
     dict(img="img/05_milo_card.png",       w=CARD_W, at=("w", 5, "Milo"),   until=("cut", 5), x=R_X, y=CY),
     dict(img="img/06_poppy_card.png",      w=CARD_W, at=("w", 6, "this"),   until=("cut", 7), x=L_X, y=CY),
-    # ending: Pawmuch homepage frame from her recording (status bar + Safari bar cropped) under the URL bar
-    dict(img="img/12_site_crop.png", w=320, r=26, at=("w", 12, "Pawmuch"), until=999, x=R_X + 30, y=CY),
+    # ending: her Pawmuch homepage screenshot (desktop hero card, nav cropped) under the URL bar
+    dict(img="img/12_homepage.png", w=460, r=24, at=("w", 12, "Pawmuch"), until=999, x=840, y=CY),
 ]
 # "go to this website, scroll / find your match and apply" -> her recording, phone card on the pink wall.
 # Stops at the Apply tap (src ~17.3 s): from ~18.2 s the form shows her name, email and phone number.
 _B = dict(src="src/08_scroll.mov", crop=(0, 145, 1180, 2115), width=620, y=830, cap_y=1480, wall="pink_paper.jpg")
-BROLL = [
-    dict(_B, at=("cut", 8),          until=("cut", 9),          start=0.8,  speed=4.0),   # scrolling the listings
-    dict(_B, at=("cut", 9),          until=("w", 10, "apply"),  start=8.0,  speed=1.6),   # tapping Coco = "your match"
+BROLL = [   # jump cuts at near-real speed (one scroll, open a profile, Apply) instead of one sped-up run
+    dict(_B, at=("cut", 8),          until=("cut", 9),          start=1.0,  speed=1.5),   # one scroll through listings
+    dict(_B, at=("cut", 9),          until=("w", 10, "apply"),  start=8.4,  speed=2.0),   # tapping into Coco = "your match"
     dict(_B, at=("w", 10, "apply"),  until=("cut", 10),         start=16.9, speed=1.0),   # Apply to adopt tap
 ]
 WEIGHTED = []
