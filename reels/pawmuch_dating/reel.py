@@ -46,13 +46,13 @@ HOOK_END = None
 # ("cut", n) = the picture cut at the END of line n.
 # --- pops. Middle row of the 3x3 grid, side picked from the face track (build/faces.json): her face sits centre-right
 #     for Nacho/Hotchy/Poppy and centre-left for Milo + the ending, so it's L, L, R, L, R rather than strict alternation.
-CARD_W = 400                     # cards from tools/pawmuch_card.py, all identical
+CARD_W = 500                     # cards from tools/pawmuch_card.py, all identical
 CY = 1020
-L_X, R_X = 215, 865
+L_X, R_X = 262, 818
 POPS = [
     dict(img="img/02_nacho_taco_card.png", w=CARD_W, at=("w", 1, "Nacho"),  until=("cut", 2), x=L_X, y=CY),
     dict(img="img/04_hotchy_card.png",     w=CARD_W, at=("w", 3, "Hotchy"), until=("cut", 4), x=L_X, y=CY),
-    dict(img="img/05_milo_card.png",       w=CARD_W, at=("w", 5, "Milo"),   until=("cut", 5), x=R_X, y=CY),
+    dict(img="img/05_milo_card.png",       w=CARD_W, at=("w", 5, "Milo"),   until=("cut", 5), x=R_X, y=CY - 100),
     dict(img="img/06_poppy_card.png",      w=CARD_W, at=("w", 6, "this"),   until=("cut", 7), x=L_X, y=CY),
     # ending: her Pawmuch homepage screenshot (desktop hero card, nav cropped) under the URL bar
     dict(img="img/12_homepage.png", w=460, r=24, at=("w", 12, "Pawmuch"), until=999, x=840, y=CY),
@@ -66,8 +66,8 @@ BROLL = [   # jump cuts at near-real speed (one scroll, open a profile, Apply) i
     dict(_B, at=("w", 10, "apply"),  until=("cut", 10),         start=16.9, speed=1.0),   # Apply to adopt tap
 ]
 WEIGHTED = []
-CAPTIONS = dict(font="Margarine-Regular.ttf", size=78, y=1140, key_scale=1.3, faces="build/faces.json",
-                key=[(0, "dating"), (0, "profiles"), (1, "Nacho"), (1, "Taco"), (2, "nacho"), (2, "ears"),
+CAPTIONS = dict(font="Margarine-Regular.ttf", size=78, y=1140, key_scale=1.3, maxw=1040, faces="build/faces.json",
+                key=[(1, "Nacho"), (1, "Taco"), (2, "nacho"), (2, "ears"),
                      (2, "taco"), (2, "shell"), (3, "Hotchy"), (3, "Potchy"), (4, "diva"), (5, "Milo"),
                      (5, "Cuddle"), (5, "Inspector"), (7, "CEO"), (8, "real"), (8, "animals"),
                      (8, "home"), (9, "scroll"), (10, "match"), (10, "apply"), (10, "reply"), (11, "dating"),
