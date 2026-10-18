@@ -74,13 +74,17 @@ class Reel:
             k = cw / sw   # blur boxes (x, y, w, h) in (cropped) source pixels -> card pixels; hides URL bars / logos
             blur = [tuple(int(v * k) for v in (x, y, x + w, y + h)) for x, y, w, h in b.get("blur", [])]
             self.brolls.append(dict(sfx=b.get("sfx", True), a=a, z=z, frames=frames, size=(cw, ch), y=b.get("y", 800), cap_y=b.get("cap_y", 1445),
-                                    blur=blur, wall=wall(b["wall"]) if b.get("wall") else None))
+                                    blur=blur, wall=wall(b["wall"]) if b.get("wall") else None,
+                                    # over=True: video sits ON her A-roll (no wall) with a plain white border, at (x, y)
+                                    over=b.get("over", False), x=b.get("x", W / 2), border=b.get("border", 8), r=b.get("r", 18)))
 
     def broll_frame(self, b, t):
         i = min(len(b["frames"]) - 1, int((t - b["a"]) * FPS))
         im = Image.frombuffer("RGB", b["size"], b["frames"][i], "raw", "RGB", 0, 1).copy()
         for bx in b["blur"]:
             im.paste(im.crop(bx).filter(ImageFilter.GaussianBlur(16)), bx[:2])
+        if b["over"]:
+            return sticker(rounded(im, b["r"]), b["border"])
         return card(im)
 
     # ---------- split screen: site recording in a rectangle on top, her A-roll cropped into a rectangle below ----------
@@ -390,7 +394,8 @@ class Reel:
         if self.split and self.split["a"] <= t < self.split["z"]: fr = self.split_frame(t, fr)
         for b in self.brolls:
             if b["a"] <= t < b["z"]:
-                fr = (b["wall"] or self.wall).copy(); place(fr, self.broll_frame(b, t), W / 2, b["y"])
+                if b["over"]: place(fr, self.broll_frame(b, t), b["x"], b["y"])
+                else: fr = (b["wall"] or self.wall).copy(); place(fr, self.broll_frame(b, t), W / 2, b["y"])
         for im, t0, t1, x, y in self.pops:
             if t0 <= t < t1: place(fr, im, x, y)
         if self.url and t >= self.url_t: place(fr, self.url, W / 2, self.s.get("URL_Y", 300))

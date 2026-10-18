@@ -113,8 +113,10 @@ def build(spec):
     cuts = json.load(open(spec.path("build/cuts.json")))
     words = (from_srt(spec, cuts) if spec.get("SRT") else
              from_lines_aligned(spec, cuts) if spec.get("ASR_JSON") else from_lines(spec, cuts))
-    for w in words:   # hand fixes: WORD_FIX = {(line, "word"): seconds on the cut}
-        fx = spec.get("WORD_FIX", {}).get((w["line"], w["w"].strip(",.?:!")))
+    seen = {}
+    for w in words:   # hand fixes: WORD_FIX = {(line, "word"): seconds on the cut}  or (line, "word", nth) for repeats
+        k = (w["line"], w["w"].strip(",.?:!")); n = seen[k] = seen.get(k, -1) + 1
+        F = spec.get("WORD_FIX", {}); fx = F.get(k + (n,), F.get(k) if n == 0 else None)
         if fx is not None: w["s"] = fx
     words.sort(key=lambda w: w["s"])
     for i, w in enumerate(words):
