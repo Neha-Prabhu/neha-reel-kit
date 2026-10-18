@@ -1,5 +1,5 @@
 """Skin story — skinsort.com finds what broke me out (one-off talking reel). Media (src/, img/, build/) not in git.
-Trims agreed with Neha (cut only, no reshoot): "Story time, I had started to break out ... what to do." (draft 4) / "and what not" / "I went onto this website," / "Well,".
+Trims agreed with Neha (cut only, no reshoot): "Story time, I had started to break out ... what to do." (draft 4) / "and what not" / "Well,".
 Product + brand names blurred in every screen recording (don't give the brands a bad name)."""
 
 AROLL = "src/aroll.MP4"
@@ -14,7 +14,7 @@ LINES = [
     "When nothing helped, I found this website",
     "where if you add your skincare products and makeup products,",
     "it tells you whether it might have caused your acne or not.",
-    "Added every single product I use",
+    "I went onto this website, added every single product I use",
     "and it flagged my foundation,",
     "the thing that I use every day.",
     "Also pointed out a few more irritating ingredients in my other products.",
@@ -22,7 +22,7 @@ LINES = [
     "And I don't like to gatekeep such websites.",
     "This is the link and you do not have to comment for it.",
 ]
-WORD_FIX = {(14, "link"): 25.47, (3, "dermats"): 3.88, (4, "stress"): 6.70}
+WORD_FIX = {(14, "the"): 26.36, (14, "link"): 26.45, (3, "dermats"): 3.88, (4, "stress"): 6.70}
 WORDS_JSON = "build/words.json"
 
 SEGS = [  # (source start, source end, speed) — draft 2: each line ends where the word's tail actually dies + a short breath
@@ -34,7 +34,7 @@ SEGS = [  # (source start, source end, speed) — draft 2: each line ends where 
     (12.60, 14.43, 1.1), # 6  When nothing helped, I found this website
     (14.64, 16.96, 1.1), # 7  where if you add your skincare products and makeup products,
     (17.55, 20.43, 1.1), # 8  it tells you whether it might have caused your acne or not.
-    (22.07, 24.25, 1.1), # 9  [I went onto this website,] added every single product I use
+    (21.00, 24.25, 1.1), # 8  I went onto this website, added every single product I use   (restored in draft 5)
     (24.47, 26.25, 1.1), # 10 and it flagged my foundation,
     (26.38, 28.00, 1.1), # 11 the thing that I use every day.
     (28.17, 31.45, 1.1), # 12 Also pointed out a few more irritating ingredients in my other products.
@@ -81,7 +81,7 @@ BROLL = [
          blur=[TYPED, (90, 190, 480, 75)] + [(195, y - 20, 110, 40) for y in (376, 505, 634, 766, 895, 1024, 1153)],
          width=760, y=800, cap_y=1265, sfx=False),
     # "... caused your acne or not. / Added every single product I use" -> product page (photo + name blurred), Save goes dark
-    dict(src=REC, at=PICK, until=("cut", 8), start=6.0, crop=(240, 330, 2560, 1330),
+    dict(src=REC, at=PICK, until=("cut", 8), start=6.0, speed=0.65, crop=(240, 330, 2560, 1330),   # slowed so Save goes dark on "added"
          blur=[(60, 50, 840, 850), (1010, 40, 1040, 175)], width=880, y=820, cap_y=1185, sfx=False),
     # "and it FLAGGED my foundation" -> zoom on What's inside, cursor lands on pore-clogger
     dict(src=REC, at=("cut", 8), until=("cut", 9), start=9.5, crop=(1230, 1280, 1560, 370),
@@ -109,7 +109,7 @@ EXTRA_SFX = [  # (file, at, volume) — subtle
     ("whoosh_soft.mp3", (("w", 5, "found"), -0.05), 0.35),        # into the website
     ("build/typing_cut.wav", (("cut", 5), 0.2), 0.30),                     # typing in the search
     ("mouse_click.mp3", (PICK, -0.03), 0.45),                               # selects the product
-    ("mouse_click.mp3", (PICK, 1.88), 0.45),                               # Save
+    ("mouse_click.mp3", (("w", 8, "added"), -0.02), 0.45),                               # Save
     ("ding.mp3", ("w", 9, "flagged"), 0.30),                      # the flag
     ("whoosh_soft.mp3", (("cut", 9), -0.05), 0.30),               # back to her
     ("whoosh_soft.mp3", (("cut", 10), -0.05), 0.30),               # into the other product
