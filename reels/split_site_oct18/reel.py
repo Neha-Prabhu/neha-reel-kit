@@ -19,7 +19,8 @@ LINES = [
     "of wide fireball.",
     "And how big is that? Oh, it's big.",
     "Oh, an estimation of 3 million people would receive 3rd degree burns.",
-    "and then there is a 246 decibel shock wave that would",
+    "and then there is a 246 decibel",
+    "shock wave that would",
     "kill almost...",
     "I should not use the word kill,",
     "that would impact almost 8 million people.",
@@ -48,14 +49,15 @@ SEGS = [  # (source start, source end, speed)
     (37.22, 38.33, 1.1),  # 12 of wide fireball.
     (38.34, 40.95, 1.1),  # 13 And how big is that? Oh, it's big.
     (41.37, 45.25, 1.1),  # 14 Oh, an estimation of 3 million people ... burns.
-    (45.66, 48.93, 1.1),  # 15 and then there is a 246 decibel shock wave that would
-    (49.05, 50.20, 1.1),  # 16 kill almost...
-    (50.33, 51.88, 1.1),  # 17 I should not use the word kill,
-    (52.02, 54.72, 1.1),  # 18 that would impact almost 8 million people.
-    (54.86, 57.10, 1.1),  # 19 and a 5 km/s peak wind
-    (57.51, 60.10, 1.1),  # 20 would destroy 8 million people again.
-    (60.54, 61.00, 1.2),  # 21 Wow.                                       (unclear rest of the line cut — ask her)
-    (62.67, 68.02, 1.1),  # 22 I mean this is so interesting ... here it is.   <- back to full frame
+    (45.66, 47.23, 1.1),  # 15 and then there is a 246 decibel
+    (47.62, 48.93, 1.1),  # 16 shock wave that would          (hiccup 47.23-47.62 cut)
+    (49.05, 50.20, 1.1),  # 17 kill almost...
+    (50.33, 51.88, 1.1),  # 18 I should not use the word kill,
+    (52.02, 54.72, 1.1),  # 19 that would impact almost 8 million people.
+    (54.86, 57.10, 1.1),  # 20 and a 5 km/s peak wind
+    (57.51, 60.10, 1.1),  # 21 would destroy 8 million people again.
+    (60.54, 61.00, 1.2),  # 22 Wow.                                       (unclear rest of the line cut — ask her)
+    (62.67, 68.02, 1.1),  # 23 I mean this is so interesting ... here it is.   <- back to full frame
 ]
 
 WALL = None
@@ -69,7 +71,7 @@ BROLL = []
 FULL = (0, 50, 1920, 1080)                            # whole site, browser bar cropped (16:9)
 PANEL = lambda y: (1280, y, 640, 360)                  # punch-in on the results column (+ a bit of map)
 SPLIT = dict(
-    at=("cut", 3), until=("cut", 21), src="src/site_rec.mp4", wall=None,
+    at=("cut", 3), until=("cut", 22), src="src/site_rec.mp4", wall=None,
     top=(90, 200, 900, 506), bottom=(90, 846, 900, 690), face_crop=(0, 470, 1080, 828), cap_y=776,
     blur=[(8, 52, 170, 60)],                           # NEAL.FUN logo — link only shows at the end
     clips=[
@@ -84,15 +86,15 @@ SPLIT = dict(
         dict(at=("cut", 11), rec=65.6, speed=1.0, crop=FULL),                   # 12 wide fireball
         dict(at=("cut", 12), rec=72.0, speed=1.0, crop=FULL),                   # 13 how big is that
         dict(at=("cut", 13), rec=74.0, speed=1.0, crop=PANEL(380)),             # 14 3rd degree burns
-        dict(at=("cut", 14), rec=80.0, speed=1.0, crop=FULL),                   # 15-17 shock wave rings
-        dict(at=("cut", 17), rec=88.0, speed=1.0, crop=PANEL(470)),             # 18 8 million people
-        dict(at=("cut", 18), rec=94.0, speed=1.0, crop=FULL),                   # 19 peak wind
-        dict(at=("cut", 19), rec=100.0, speed=1.0, crop=PANEL(50)),             # 20 destroy 8 million again
-        dict(at=("cut", 20), rec=102.0, speed=1.0, crop=FULL),                  # 21 wow
+        dict(at=("cut", 14), rec=80.0, speed=1.0, crop=FULL),                   # 16-17 shock wave rings
+        dict(at=("cut", 18), rec=88.0, speed=1.0, crop=PANEL(470)),             # 19 8 million people
+        dict(at=("cut", 19), rec=94.0, speed=1.0, crop=FULL),                   # 20 peak wind
+        dict(at=("cut", 20), rec=100.0, speed=1.0, crop=PANEL(50)),             # 21 destroy 8 million again
+        dict(at=("cut", 21), rec=102.0, speed=1.0, crop=FULL),                  # 22 wow
     ],
 )
 WEIGHTED = []
 URL = "neal.fun/asteroid-launcher"
-URL_AT = ("w", 22, "here")
+URL_AT = ("w", 23, "here")
 HOLD = 1.3
 ZOOMS = []
