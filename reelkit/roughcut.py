@@ -12,6 +12,8 @@ House rules baked in (from Days 3-5):
     (never loudnorm = pumping; never rubberband = robotic/double voice)
   * J cut = ONE frame (next line's audio starts 1/30 s before the picture cuts) — more shows her looking away
   * picture cuts land on the 30 fps grid, audio segments are trimmed to exact length -> lip sync never drifts
+  * optional 4th value in a SEGS entry = seconds of SILENCE added after the line (picture keeps running) — only for
+    lines covered by B-roll, e.g. to let a screen recording's own audio play for a beat
 """
 import json, os, subprocess, sys
 from .spec import load_spec
@@ -52,21 +54,22 @@ def build(spec):
     SEGS = spec.SEGS; J = 1 / FPS; n = len(SEGS)
     fc = "[0:a]pan=mono|c0=0.5*c0+0.5*c1,aresample=48000[m];[m]asplit=%d%s;" % (n, "".join(f"[m{i}]" for i in range(n)))
     starts, T = [], 0.0
-    for a, b, k in SEGS:
-        starts.append(T); T += (b - a) / k
+    SEGS = [tuple(x) + (0.0,) * (4 - len(x)) for x in SEGS]
+    for a, b, k, pad in SEGS:
+        starts.append(T); T += (b - a) / k + pad
     NF = int(round(T * FPS))
     cf = [0] + [int(round((st + J) * FPS)) for st in starts[1:]] + [NF]
-    for i, (a, b, k) in enumerate(SEGS):
+    for i, (a, b, k, pad) in enumerate(SEGS):
         d = b - a; t0 = cf[i] / FPS; va = a + (t0 - starts[i]) * k; nfr = cf[i + 1] - cf[i]
         fc += (f"[0:v]trim=start={va:.4f}:duration={nfr / FPS * k + 0.2:.4f},setpts=(PTS-STARTPTS)/{k},fps={FPS},"
                f"trim=end_frame={nfr},setpts=PTS-STARTPTS[v{i}];"
                f"[m{i}]atrim={a}:{b},asetpts=PTS-STARTPTS,afade=t=in:d=0.010,afade=t=out:st={d - 0.02:.3f}:d=0.02,"
-               f"atempo={k},apad,atrim=end={d / k:.4f}[a{i}];")
+               f"atempo={k},apad,atrim=end={d / k + pad:.4f}[a{i}];")
     fa = fc.split("[0:v]")[0] + "".join(p.split(";", 1)[1] for p in fc.split("[0:v]")[1:])   # audio-only graph
     fa += "".join(f"[a{i}]" for i in range(n)) + f"concat=n={n}:v=0:a=1[a0];[a0]volume=11dB,alimiter=limit=0.94:attack=5:release=60[a]"
     # video: one encode per segment, then a lossless concat — a single 20+ branch trim graph gets OOM-killed
     vdir = spec.path("build/_segs"); os.makedirs(vdir, exist_ok=True); lst = []
-    for i, (a, b, k) in enumerate(SEGS):
+    for i, (a, b, k, pad) in enumerate(SEGS):
         t0 = cf[i] / FPS; va = a + (t0 - starts[i]) * k; nfr = cf[i + 1] - cf[i]; p = os.path.join(vdir, f"v{i:03d}.mp4")
         sh("ffmpeg", "-loglevel", "error", "-y", "-ss", f"{va:.4f}", "-i", src, "-an", "-vf",
            f"setpts=(PTS-STARTPTS)/{k},fps={FPS},trim=end_frame={nfr},setpts=PTS-STARTPTS",

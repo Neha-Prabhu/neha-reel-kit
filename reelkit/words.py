@@ -23,9 +23,9 @@ def syllables(word):
 
 def _src_to_out(segs, t):
     acc = 0.0
-    for i, (a, b, k) in enumerate(segs):
+    for i, (a, b, k, *pad) in enumerate(segs):
         if a - 0.05 <= t <= b + 0.05: return i, acc + (min(max(t, a), b) - a) / k
-        acc += (b - a) / k
+        acc += (b - a) / k + (pad[0] if pad else 0)
     return None, None
 
 

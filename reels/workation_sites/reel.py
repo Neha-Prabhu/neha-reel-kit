@@ -22,8 +22,8 @@ LINES = [
     "So save this for the next time you're bored of your playlist while working.",
 ]
 ASR_JSON = "build/asr_cut.json"
-WORD_FIX = {(12, "rain"): 27.51, (12, "some", 0): 27.87, (12, "have", 1): 28.0, (12, "traffic"): 28.14,
-            (12, "some", 1): 28.65, (12, "have", 2): 28.77, (12, "just"): 28.89, (12, "plants"): 29.12}
+WORD_FIX = {(12, "rain"): 28.83, (12, "some", 0): 29.16, (12, "have", 1): 29.31, (12, "traffic"): 29.46,
+            (12, "some", 1): 29.94, (12, "have", 2): 30.06, (12, "just"): 30.21, (12, "plants"): 30.53}
 WORDS_JSON = "build/words.json"
 
 SEGS = [  # (source start, source end, speed)
@@ -35,7 +35,7 @@ SEGS = [  # (source start, source end, speed)
     (14.07, 15.55, 1.1),  # 5  see the traffic
     (15.81, 17.10, 1.1),  # 6  The next one is Radio Garden.
     (17.11, 19.51, 1.1),  # 7  spin the globe, tap on any dot
-    (19.93, 22.98, 1.1),  # 8  live radio right now
+    (19.93, 22.98, 1.1, 1.3),  # 8  live radio right now  + 1.3 s silence: Mumbai radio plays (under the card)
     (22.99, 25.13, 1.1),  # 9  last one ... WindowSwap
     (25.26, 29.28, 1.1),  # 10 people from all over the world ...
     (29.29, 30.91, 1.1),  # 11 so that the others can enjoy it
@@ -49,6 +49,7 @@ INTRO = None
 HOOK_END = None
 
 POPS = [
+    dict(img="img/00_hook.png", at=0.0, until=("cut", 0), x=540, y=385, sfx=False),          # text hook (make_hook.py)
     dict(img="img/01_beach-laptop_sticker.png", w=280, outline=10, at=("w", 0, "workation"), until=("cut", 0), x=905, y=830),
     dict(img="img/14_save_sticker.png", h=170, outline=10, at=("w", 14, "save"), until=(("end", 14), 1.5), x=925, y=900),
 ]
@@ -57,15 +58,19 @@ POPS = [
 FULL = (0, 52, 1920, 1112)
 CARD = dict(width=920, y=820, cap_y=1250)                 # full-focus: white card on the wall, captions under it
 DL, RG, WS = "src/driveandlisten.mov", "src/radiogarden.mov", "src/windowswap.mov"
+TO = "src/driveandlisten_toronto.mov"                     # Retina 3434x2080 — same layout x1.7885
+K = 3434 / 1920
+T = lambda b: tuple(int(round(v * K)) for v in b)
 DL_AD = [(1525, 668, 380, 360)]                           # sidebar ad (cropped-recording pixels)
 RG_AD = [(1575, 12, 345, 300)]                            # top-right ad
 OVER = dict(over=True, width=820, x=540, y=1195, cap_y=1490, border=8, r=18)   # B-roll ON her A-roll, white border
 BROLL = [
-    # Drive & Listen — lines 2-5
-    dict(src=DL, at=("cut", 1), until=("cut", 2), start=0.0, crop=FULL, blur=DL_AD, **CARD),                      # pick a city -> video
-    dict(src=DL, at=("cut", 2), until=("cut", 3), start=2.9, crop=(1360, 300, 560, 324), sfx=False, **CARD),      # radio: punch-in on city list + station
-    dict(src=DL, at=("cut", 3), until=("w", 4, "Bangalore"), start=4.2, crop=FULL, blur=DL_AD, sfx=False, **CARD),
-    dict(src=DL, at=("w", 4, "Bangalore"), until=("cut", 5), start=7.3, crop=FULL, blur=DL_AD, sfx=False, **CARD),  # daytime traffic
+    # Drive & Listen — lines 2-5: Toronto while she explains, Bangalore night on "Ahmedabad", Bangalore day on "Bangalore"
+    dict(src=TO, at=("cut", 1), until=("cut", 3), start=0.0, crop=T(FULL), blur=[T(b) for b in DL_AD], **CARD),          # pick a city -> video, radio
+                                                      # (no station punch-in: Toronto's radio panel only says "loading")
+    dict(src=TO, at=("cut", 3), until=("w", 4, "Ahmedabad"), start=9.0, crop=T(FULL), blur=[T(b) for b in DL_AD], sfx=False, **CARD),
+    dict(src=DL, at=("w", 4, "Ahmedabad"), until=("w", 4, "Bangalore"), start=0.5, crop=FULL, blur=DL_AD, sfx=False, **CARD),
+    dict(src=DL, at=("w", 4, "Bangalore"), until=("cut", 5), start=7.3, crop=FULL, blur=DL_AD, sfx=False, **CARD),      # daytime traffic
     # Radio Garden — lines 7-8
     dict(src=RG, at=("cut", 6), until=("w", 7, "tap"), start=1.2, speed=2.0, crop=FULL, blur=RG_AD, **CARD),      # spin the globe
     dict(src=RG, at=("w", 7, "tap"), until=("cut", 7), start=19.3, crop=FULL, blur=RG_AD, sfx=False, **CARD),     # tap Mumbai
@@ -77,6 +82,7 @@ BROLL = [
     dict(src=WS, at=("w", 12, "traffic"), until=("w", 12, "plants"), start=42.0, crop=FULL, **OVER),              # city view — no traffic window in the recording
     dict(src=WS, at=("w", 12, "plants"), until=("cut", 12), start=5.0, crop=FULL, **OVER),                         # plants
 ]
+EXTRA_SFX = [("build/rg_radio_beat.wav", (("w", 8, "now", 1), 0.40), 1.0)]   # Mumbai station's live audio in the pause
 WEIGHTED = [   # website names: butter, big, below her face
     (1, "Drive", 3, 540, -1380),
     (6, "Radio", 2, 540, -1380),
