@@ -20,13 +20,13 @@ LINES = [
     "This is so much fun. So I found this website where you can actually, you know, play around with drum beats on a pizza. This is, I think, called Groove Pizza and I'll add the link here, so go check it out.",
 ]
 ASR_JSON = "build/asr_cut.json"
-WORD_FIX = {(1, "So"): 5.46, (6, "link"): 30.58, (6, "here"): 30.93}
+WORD_FIX = {(1, "So"): 2.40, (6, "link"): 27.52, (6, "here"): 27.87}
 WORDS_JSON = "build/words.json"
 
 B = 0.5104
 g = lambda k: round(0.4338 + k * B, 3)       # beat grid after playback restarts (A-roll seconds)
 SEGS = [  # (source start, source end, speed)
-    (0.106, 5.210, 1.0),      # 0  hook — 10 beats of her vibing (kept long on purpose, she asked)
+    (2.148, 4.190, 1.0),      # 0  hook — 4 beats (~2 s) of her vibing: smile, hair flip, laugh
     (g(19), g(25), 1.0),      # 1  So if you know ... starting part.            <- split screen starts
     (g(29), g(32), 1.0),      # 2  What if I do this?   (skips "And what if I change," — the repeat)
     (g(42), g(50), 1.0),      # 3  (clicking) Or this? + new beat
@@ -40,7 +40,9 @@ INTRO = None
 HOOK_END = None
 CAP_MAX_TAIL = 1.0                 # captions clear during the beat-only stretches instead of hanging there
 
-POPS = []
+POPS = [
+    dict(img="img/00_hook.png", at=0.0, until=("cut", 0), x=540, y=440, sfx=False),   # text hook, her words (make_hook.py)
+]
 BROLL = []
 D = 6.164                                             # rec time = A-roll time + D (audio cross-correlation)
 SITE = (360, 45, 1520, 1080)                          # pizza + step grid + play button, browser bar and sidebar cropped
