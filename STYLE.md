@@ -3,6 +3,8 @@
 **Pacing / audio**
 - Remove every pause; 1.1x speed; list lines and fast throwaway lines 1.2x. Never cut a line's last word.
 - J cut = exactly 1 frame. Longer shows her looking away before the next line.
+- Line ends: cut where the word's tail actually dies (below ~-58 dB, not the -40 dB silencedetect edge) + a ~0.1 s breath
+  (~0.15 s at a full stop). Cutting at the detect edge clips endings ("difference", "websites") and lines feel like they never end.
 - Audio: mono → trim + atempo per segment → +11 dB → light limiter, single encode. No loudnorm (pumps), no rubberband (robotic).
 - Downscale 4K to 1080x1920 before any trimming.
 
