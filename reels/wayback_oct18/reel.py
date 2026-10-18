@@ -63,8 +63,10 @@ POPS = [
     dict(img="img/00_album_sticker.png", w=300, outline=10, at=("w", 0, "album"), until=("w", 0, "The"), x=880, y=910),
     # screenshots: on the wall above her window (too detailed for a side-column pop), Wayback toolbar cropped off
     dict(img="img/05_flipkart.png", w=880, r=22, at=("w", 5, "Flipkart"), until=("cut", 7), x=540, y=455),
-    dict(img="img/07_book_sticker.png", w=330, outline=10, at=("w", 6, "Books"), until=("cut", 7), x=205, y=930),
+    dict(img="img/07_book_sticker.png", w=330, outline=10, at=("w", 6, "Books"), until=("w", 7, "Bro"), x=205, y=930),   # gone on "Bro"
     dict(img="img/10_foodiebay.png", w=880, r=22, at=("w", 10, "FoodieBay"), until=("cut", 11), x=540, y=480),
+    # the reveal: Wayback logo (same one blurred in the screen recording) on "Wayback", under the URL bar, to the end
+    dict(img="img/14_wayback_logo.png", w=600, r=22, at=("w", 14, "Wayback"), until=99, x=540, y=540),
 ]
 # screen recording = FULL FOCUS: replaces her completely (wall + white card), jump cuts per phrase, browser bar +
 # Internet Archive nav cropped, Wayback logo blurred until she names it at the end. Same 900x520 card for every clip.
