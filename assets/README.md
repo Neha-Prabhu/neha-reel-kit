@@ -8,6 +8,7 @@ stays out of git — it lives in reels/<name>/img|src locally only.
 |---|---|---|
 | `fonts/` | Diagramm-UltraBoldItalic (captions, labels, weighted words), Monigue (titles), ProvidenceSans (handwritten accent), Poppins Medium/Bold (URL bar, UI), Fredoka SemiBold/Bold + Nunito Regular/Bold (Pawmuch site fonts — card pops), Margarine (kinetic captions, cats reel) | |
 | `sfx/` | pop, whoosh, whoosh_soft, ding, sparkle, typing, mouse_click, thud, shutter, shutter_single (one click), crumple (paper) | pop = every image landing |
+| `sfx/` | impact_boom (short cinematic boom), impact_boom_big (long deep boom, shock-wave level), suspense_riser (5 s build-up — use the tail so it peaks on the reveal), fire_whoosh, record_scratch | disaster / dramatic reels (asteroid reel); keep quiet under her voice (~0.2-0.38) |
 | `textures/` | orange_soft, orange_red, orange_grid_bats, pink_paper (Pawmuch B-roll wall) | wall for B-roll / intro on themed reels |
 | `overlays/` | paper_crumple_greenscreen.mp4 — paper ball opens into a sheet; blue bg = key out, green = image goes here | 1920x1080, 2 s; rotate 90° for portrait |
 | `logos-and-ui/` | pinterest_logo (.png/.avif), whatsapp_bubble_anim.mp4 (white + green chat bubbles on black — key out black) | for text hooks / mock UI pops |
