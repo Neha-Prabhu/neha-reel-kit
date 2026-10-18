@@ -133,16 +133,16 @@ class Reel:
         c = next(c for c in S["clips"] if c["t"] <= t < c["z"]) if t >= S["clips"][0]["t"] else S["clips"][0]
         fr.paste(self._clip_frame(c, max(t, c["t"])), S["top"][:2])
         fx, fy, fw, fh = S.get("face_crop", (0, 470, 1080, 828)); bx, by, bw, bh = S["bottom"]
-        src = self._face_src_frame(t) if S.get("face_src") else base.convert("RGB")
+        src = self._face_src_frame(t, S["face_src"]) if S.get("face_src") else base.convert("RGB")
         fr.paste(src.resize((bw, bh), Image.LANCZOS, box=(fx, fy, fx + fw, fy + fh)), (bx, by))
         return fr
 
-    def _face_src_frame(self, t):
-        """SPLIT face_src: a second cut of the A-roll (python -m reelkit.roughcut <spec> --wide), read in step with t."""
-        S = self.split; k = int(round(t * FPS)); fs = S.setdefault("fs", {})
+    def _face_src_frame(self, t, path):
+        """A second cut of the A-roll (python -m reelkit.roughcut <spec> --wide), read in step with t (SPLIT face_src / SOLO)."""
+        k = int(round(t * FPS)); fs = self.__dict__.setdefault("_fs", {})
         if not fs or fs["k"] > k:
             if fs: fs["p"].kill()
-            path = self.s.path(S["face_src"])
+            path = self.s.path(path)
             w, h = map(int, subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v", "-show_entries", "stream=width,height",
                                             "-of", "csv=p=0", path], capture_output=True, text=True).stdout.strip().split(","))
             p = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-ss", f"{k / FPS:.3f}", "-i", path, "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
@@ -154,6 +154,14 @@ class Reel:
             if len(b) == n: fs["last"] = b
             fs["k"] += 1
         return Image.frombuffer("RGB", fs["size"], fs["last"], "raw", "RGB", 0, 1).copy()
+
+    # ---------- SOLO: landscape A-roll kept landscape, centred on the wall (outside the split screen) ----------
+    # SOLO = dict(src="build/roughcut_wide.mp4", box=(90, 707, 900, 506), crop=(0, 0, 1152, 648), cap_y=1310, wall=None)
+    def solo_frame(self, t):
+        O = self.s.SOLO; fr = (wall(O["wall"]) if O.get("wall") else self.wall).copy()
+        x, y, w, h = O["box"]; cx, cy, cw, ch = O.get("crop", (0, 0, w, h))
+        fr.paste(self._face_src_frame(t, O["src"]).resize((w, h), Image.LANCZOS, box=(cx, cy, cx + cw, cy + ch)), (x, y))
+        return fr
 
     # ---------- optional intro card: stop-motion frames + a label pop (e.g. "Day 5") + typed title ----------
     def _intro(self):
@@ -353,6 +361,7 @@ class Reel:
 
     def cap_pos(self, t, cw, ch):
         if self.split and self.split["a"] <= t < self.split["z"]: return W / 2, self.split.get("cap_y", 776)
+        if self.s.get("SOLO"): return W / 2, self.s.SOLO.get("cap_y", 1310)
         if t < self.hook_end: return W / 2, CAP_Y
         for b in self.brolls:
             if b["a"] <= t < b["z"]: return W / 2, b["cap_y"]
@@ -413,7 +422,9 @@ class Reel:
                 zs = z0 + (z1 - z0) * u
                 fr = fr.resize((W, H), Image.BICUBIC, box=(ax - ax / zs, ay - ay / zs, ax + (W - ax) / zs, ay + (H - ay) / zs))
         if self.intro and self.intro["a"] <= t < self.intro["b"]: fr = self.intro_frame(t)
-        if self.split and self.split["a"] <= t < self.split["z"]: fr = self.split_frame(t, fr)
+        in_split = self.split and self.split["a"] <= t < self.split["z"]
+        if in_split: fr = self.split_frame(t, fr)
+        elif self.s.get("SOLO"): fr = self.solo_frame(t)
         for b in self.brolls:
             if b["a"] <= t < b["z"]:
                 if b["over"]: place(fr, self.broll_frame(b, t), b["x"], b["y"])
