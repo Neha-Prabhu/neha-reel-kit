@@ -59,8 +59,8 @@ POPS = [
     dict(img="img/pills.jpg", w=360, r=22, at=("w", 4, "dermats"), until=("cut", 4), x=R_X - 10, y=CY - 20),
     # "you can SEE the difference" -> self-obsessed kitten (photo pop, rembg can't separate white fur from the bg)
     dict(img="img/kitten.jpg", w=330, r=22, at=("w", 13, "see"), until=("w", 14, "like"), x=R_X - 10, y=CY - 10),
-    # link ending: site screenshot in the left column, URL bar on top
-    dict(img="img/15_site_home.png", w=380, r=22, at=("w", 15, "link"), until=999, x=L_X + 20, y=CY, sfx=False),
+    # link ending: skinsort logo, centred just above the captions; URL bar on top
+    dict(img="img/15_skinsort_logo.png", w=460, r=24, at=("w", 15, "link"), until=999, x=540, y=1240, sfx=False),
 ]
 
 # Screen recordings = desktop (3432x2080). Each step gets its own crop (jump-zoom), ad bar + browser/URL bar cropped off.
