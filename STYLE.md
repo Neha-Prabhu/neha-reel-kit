@@ -40,6 +40,12 @@
   face + torso window (empty headroom trimmed). Everything else — sides, gap, IG buttons + caption zone — is wall.
   Right edge ≤ ~990 so the IG like/comment column sits on the wall. Captions in the gap between the rectangles.
   Top panel jump-cuts per line: full site view for the big visual moments, punch-ins on the results text she's reading.
+  If the 9:16 crop is face-only (landscape A-roll, she sits close), feed the bottom window from the original clip:
+  AROLL_WIDE + `roughcut --wide` + SPLIT face_src (face + torso + laptop edge).
+- MUSIC REELS (the site plays music, she vibes to it as the hook): don't over-trim the vibing hook — keep ~5 s of her
+  enjoying it. Sync the screen recording's clean audio to the A-roll (cross-correlate), mix it under her mic, panel
+  clips at the exact synced moment. Music stretches stay 1.0x and every cut sits on the song's beat grid so the beat
+  never stutters; captions clear in beat-only stretches (CAP_MAX_TAIL).
 - Long screen recordings: don't speed one run up to fit (confusing). Jump-cut it instead: ~1 s of one scroll, then ~1 s of the
   action the line names (opening a profile, tapping Apply), each at near-real speed (1-2x).
 - Intro card (optional, only if the series uses one): stop-motion desk, label pop (e.g. "Day 5") + typed title; themed props allowed.

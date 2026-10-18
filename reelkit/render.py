@@ -133,8 +133,27 @@ class Reel:
         c = next(c for c in S["clips"] if c["t"] <= t < c["z"]) if t >= S["clips"][0]["t"] else S["clips"][0]
         fr.paste(self._clip_frame(c, max(t, c["t"])), S["top"][:2])
         fx, fy, fw, fh = S.get("face_crop", (0, 470, 1080, 828)); bx, by, bw, bh = S["bottom"]
-        fr.paste(base.convert("RGB").resize((bw, bh), Image.LANCZOS, box=(fx, fy, fx + fw, fy + fh)), (bx, by))
+        src = self._face_src_frame(t) if S.get("face_src") else base.convert("RGB")
+        fr.paste(src.resize((bw, bh), Image.LANCZOS, box=(fx, fy, fx + fw, fy + fh)), (bx, by))
         return fr
+
+    def _face_src_frame(self, t):
+        """SPLIT face_src: a second cut of the A-roll (python -m reelkit.roughcut <spec> --wide), read in step with t."""
+        S = self.split; k = int(round(t * FPS)); fs = S.setdefault("fs", {})
+        if not fs or fs["k"] > k:
+            if fs: fs["p"].kill()
+            path = self.s.path(S["face_src"])
+            w, h = map(int, subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v", "-show_entries", "stream=width,height",
+                                            "-of", "csv=p=0", path], capture_output=True, text=True).stdout.strip().split(","))
+            p = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-ss", f"{k / FPS:.3f}", "-i", path, "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
+                                 stdout=subprocess.PIPE, bufsize=10 ** 7)
+            fs.update(p=p, k=k, size=(w, h), last=None)
+        n = fs["size"][0] * fs["size"][1] * 3
+        while fs["k"] <= k:
+            b = fs["p"].stdout.read(n)
+            if len(b) == n: fs["last"] = b
+            fs["k"] += 1
+        return Image.frombuffer("RGB", fs["size"], fs["last"], "raw", "RGB", 0, 1).copy()
 
     # ---------- optional intro card: stop-motion frames + a label pop (e.g. "Day 5") + typed title ----------
     def _intro(self):
@@ -250,7 +269,10 @@ class Reel:
         for i, (kind, s_, obj) in enumerate(ev):
             nxt = ev[i + 1][1] if i + 1 < len(ev) else s_ + 1.5
             if ia > s_: nxt = min(nxt, ia)
-            if kind == "c": obj["e"] = nxt
+            if kind == "c":
+                obj["e"] = nxt
+                tail = self.s.get("CAP_MAX_TAIL")   # opt-in: clear a caption this long after its last word starts
+                if tail: obj["e"] = min(nxt, obj["words"][-1]["s"] + tail)   # (music-only stretches stay clean)
             else: obj[1] = nxt
         if self.chunks: self.chunks[-1]["e"] += self.s.get("HOLD", 1.3)
 

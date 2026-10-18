@@ -86,6 +86,27 @@ def build(spec):
     print(f"rough cut {T:.2f}s -> {spec.path('build/roughcut.mp4')}")
 
 
+def build_wide(spec):
+    """Same cut, picture only, from a second (e.g. landscape) source: spec.AROLL_WIDE = (path, crop "w:h:x:y", out w, out h).
+    For a split screen whose bottom window needs a wider framing than the 9:16 A-roll allows (SPLIT face_src)."""
+    path, crop, ow, oh = spec.AROLL_WIDE
+    SEGS = spec.SEGS; J = 1 / FPS; starts, T = [], 0.0
+    for a, b, k in SEGS:
+        starts.append(T); T += (b - a) / k
+    NF = int(round(T * FPS)); cf = [0] + [int(round((st + J) * FPS)) for st in starts[1:]] + [NF]
+    vdir = spec.path("build/_segs_wide"); os.makedirs(vdir, exist_ok=True); lst = []
+    for i, (a, b, k) in enumerate(SEGS):
+        t0 = cf[i] / FPS; va = a + (t0 - starts[i]) * k; nfr = cf[i + 1] - cf[i]; p = os.path.join(vdir, f"v{i:03d}.mp4")
+        sh("ffmpeg", "-loglevel", "error", "-y", "-ss", f"{va:.4f}", "-i", spec.path(path), "-an", "-vf",
+           f"crop={crop},scale={ow}:{oh}:flags=lanczos,setpts=(PTS-STARTPTS)/{k},fps={FPS},trim=end_frame={nfr},setpts=PTS-STARTPTS",
+           "-c:v", "libx264", "-crf", "18", "-preset", "medium", "-pix_fmt", "yuv420p", "-r", str(FPS), p)
+        lst.append(f"file '{p}'")
+    open(os.path.join(vdir, "list.txt"), "w").write("\n".join(lst))
+    sh("ffmpeg", "-loglevel", "error", "-y", "-f", "concat", "-safe", "0", "-i", os.path.join(vdir, "list.txt"), "-c:v", "copy",
+       spec.path("build/roughcut_wide.mp4"))
+    print("wide cut ->", spec.path("build/roughcut_wide.mp4"))
+
+
 if __name__ == "__main__":
     spec = load_spec(sys.argv[1])
-    detect(spec) if "--detect" in sys.argv else build(spec)
+    detect(spec) if "--detect" in sys.argv else build_wide(spec) if "--wide" in sys.argv else build(spec)
