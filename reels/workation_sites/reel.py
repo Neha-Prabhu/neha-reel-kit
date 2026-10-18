@@ -66,8 +66,8 @@ RG_AD = [(1575, 12, 345, 300)]                            # top-right ad
 OVER = dict(over=True, width=820, x=540, y=1195, cap_y=1490, border=8, r=18)   # B-roll ON her A-roll, white border
 BROLL = [
     # Drive & Listen — lines 2-5: Toronto while she explains, Bangalore night on "Ahmedabad", Bangalore day on "Bangalore"
-    dict(src=TO, at=("cut", 1), until=("cut", 3), start=0.0, crop=T(FULL), blur=[T(b) for b in DL_AD], **CARD),          # pick a city -> video, radio
-                                                      # (no station punch-in: Toronto's radio panel only says "loading")
+    dict(src=TO, at=("cut", 1), until=("cut", 2), start=0.0, crop=T(FULL), blur=[T(b) for b in DL_AD], **CARD),          # pick a city -> video
+    dict(src=TO, at=("cut", 2), until=("cut", 3), start=12.0, crop=T((1360, 300, 560, 324)), sfx=False, **CARD),       # radio: punch-in on the station panel (playing)
     dict(src=TO, at=("cut", 3), until=("w", 4, "Ahmedabad"), start=9.0, crop=T(FULL), blur=[T(b) for b in DL_AD], sfx=False, **CARD),
     dict(src=DL, at=("w", 4, "Ahmedabad"), until=("w", 4, "Bangalore"), start=0.5, crop=FULL, blur=DL_AD, sfx=False, **CARD),
     dict(src=DL, at=("w", 4, "Bangalore"), until=("cut", 5), start=7.3, crop=FULL, blur=DL_AD, sfx=False, **CARD),      # daytime traffic
