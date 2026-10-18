@@ -34,6 +34,12 @@
 - Brand: blue wall (142,166,200), butter (247,226,122), lavender, ink; fonts Diagramm (captions, labels, weighted words), Monigue (titles).
 - Themed reels may swap the wall everywhere (e.g. Halloween: orange texture in intro AND B-roll).
 - Screen recordings: white rounded phone card on the wall, top clear of the IG "Reels" header, URL bars/logos blurred.
+- SPLIT SCREEN (site demos, third mode — SPLIT in the spec): from the line where she starts showing the site. Two sharp-cornered
+  rectangles (no rounding, no white card), same width (~900), on the wall: site recording on top (16:9, below the IG header,
+  browser bar cropped, logos/links blurred until the link ending, muted), her A-roll below cropped to an almost-square
+  face + torso window (empty headroom trimmed). Everything else — sides, gap, IG buttons + caption zone — is wall.
+  Right edge ≤ ~990 so the IG like/comment column sits on the wall. Captions in the gap between the rectangles.
+  Top panel jump-cuts per line: full site view for the big visual moments, punch-ins on the results text she's reading.
 - Long screen recordings: don't speed one run up to fit (confusing). Jump-cut it instead: ~1 s of one scroll, then ~1 s of the
   action the line names (opening a profile, tapping Apply), each at near-real speed (1-2x).
 - Intro card (optional, only if the series uses one): stop-motion desk, label pop (e.g. "Day 5") + typed title; themed props allowed.

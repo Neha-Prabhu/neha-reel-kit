@@ -62,13 +62,22 @@ def build(spec):
                f"trim=end_frame={nfr},setpts=PTS-STARTPTS[v{i}];"
                f"[m{i}]atrim={a}:{b},asetpts=PTS-STARTPTS,afade=t=in:d=0.010,afade=t=out:st={d - 0.02:.3f}:d=0.02,"
                f"atempo={k},apad,atrim=end={d / k:.4f}[a{i}];")
-    fc += "".join(f"[v{i}]" for i in range(n)) + f"concat=n={n}:v=1:a=0[v];" + "".join(f"[a{i}]" for i in range(n)) + \
-          f"concat=n={n}:v=0:a=1[a0];[a0]volume=11dB,alimiter=limit=0.94:attack=5:release=60[a]"
-    sh("ffmpeg", "-loglevel", "error", "-y", "-i", src, "-filter_complex", fc, "-map", "[v]", "-map", "[a]",
-       "-c:v", "libx264", "-crf", "20", "-preset", "medium", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "320k",
+    fa = fc.split("[0:v]")[0] + "".join(p.split(";", 1)[1] for p in fc.split("[0:v]")[1:])   # audio-only graph
+    fa += "".join(f"[a{i}]" for i in range(n)) + f"concat=n={n}:v=0:a=1[a0];[a0]volume=11dB,alimiter=limit=0.94:attack=5:release=60[a]"
+    # video: one encode per segment, then a lossless concat — a single 20+ branch trim graph gets OOM-killed
+    vdir = spec.path("build/_segs"); os.makedirs(vdir, exist_ok=True); lst = []
+    for i, (a, b, k) in enumerate(SEGS):
+        t0 = cf[i] / FPS; va = a + (t0 - starts[i]) * k; nfr = cf[i + 1] - cf[i]; p = os.path.join(vdir, f"v{i:03d}.mp4")
+        sh("ffmpeg", "-loglevel", "error", "-y", "-ss", f"{va:.4f}", "-i", src, "-an", "-vf",
+           f"setpts=(PTS-STARTPTS)/{k},fps={FPS},trim=end_frame={nfr},setpts=PTS-STARTPTS",
+           "-c:v", "libx264", "-crf", "20", "-preset", "medium", "-pix_fmt", "yuv420p", "-r", str(FPS), p)
+        lst.append(f"file '{p}'")
+    open(os.path.join(vdir, "list.txt"), "w").write("\n".join(lst))
+    sh("ffmpeg", "-loglevel", "error", "-y", "-i", src, "-filter_complex", fa, "-map", "[a]", "-c:a", "pcm_s16le",
+       spec.path("build/voice_clean.wav"))
+    sh("ffmpeg", "-loglevel", "error", "-y", "-f", "concat", "-safe", "0", "-i", os.path.join(vdir, "list.txt"),
+       "-i", spec.path("build/voice_clean.wav"), "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "320k",
        "-movflags", "+faststart", spec.path("build/roughcut.mp4"))
-    sh("ffmpeg", "-loglevel", "error", "-y", "-i", src, "-filter_complex", fc, "-map", "[a]", "-c:a", "pcm_s16le",
-       spec.path("build/voice_clean.wav"), "-map", "[v]", "-f", "null", "-")
     json.dump({"segs": SEGS, "J": J, "picture_cuts": [c / FPS for c in cf[1:-1]], "audio_starts": starts, "duration": T},
               open(spec.path("build/cuts.json"), "w"), indent=1)
     print(f"rough cut {T:.2f}s -> {spec.path('build/roughcut.mp4')}")

@@ -34,7 +34,7 @@ class Reel:
         self.voice = spec.path("build/voice_clean.wav")
         self.wall = wall(spec.get("WALL"))
         self.hook_end = self.T(spec.HOOK_END) if spec.get("HOOK_END") is not None else 0
-        self._pops(); self._brolls(); self._intro(); self._captions()
+        self._pops(); self._brolls(); self._split(); self._intro(); self._captions()
         self.url_t = self.T(spec.URL_AT) if spec.get("URL") else None
         self.url = url_bar(spec.URL) if spec.get("URL") else None
         self.hold = spec.get("HOLD", 1.3)
@@ -82,6 +82,55 @@ class Reel:
         for bx in b["blur"]:
             im.paste(im.crop(bx).filter(ImageFilter.GaussianBlur(16)), bx[:2])
         return card(im)
+
+    # ---------- split screen: site recording in a rectangle on top, her A-roll cropped into a rectangle below ----------
+    # SPLIT = dict(at=("cut", 3), until=("cut", 21), src="src/site.mp4", wall=None,
+    #              top=(90, 200, 900, 506), bottom=(90, 846, 900, 690),   # (x, y, w, h) on the 1080x1920 frame
+    #              face_crop=(0, 470, 1080, 828),                         # A-roll window (x, y, w, h) -> bottom box
+    #              cap_y=776, sfx=True, blur=[(x, y, w, h), ...],          # blur boxes in recording pixels (logos/links)
+    #              clips=[dict(at=("start", 4), rec=9.0, speed=2.0, crop=(x, y, w, h)), ...])
+    #   sharp corners, no card/border; each clip runs until the next one starts (hard jump cuts / punch-ins);
+    #   everything else (gap, sides, IG button + caption zone) is wall. Captions sit in the gap at cap_y.
+    def _split(self):
+        S = self.s.get("SPLIT"); self.split = None
+        if not S: return
+        a, z = self.T(S["at"]), self.T(S["until"])
+        clips = [dict(c, t=self.T(c["at"])) for c in S["clips"]]
+        for i, c in enumerate(clips): c["z"] = clips[i + 1]["t"] if i + 1 < len(clips) else z
+        self.split = dict(S, a=a, z=z, clips=clips, src_path=self.s.path(S["src"]),
+                          wall_im=wall(S["wall"]) if S.get("wall") else self.wall, rd=None)
+
+    def _clip_frame(self, c, t):
+        S = self.split; tx, ty, tw, th = S["top"]; k = int((t - c["t"]) * FPS)
+        rd = S["rd"]
+        if rd is None or rd["c"] is not c or rd["k"] > k:
+            if rd: rd["p"].kill()
+            x, y, w, h = c["crop"]; sp = c.get("speed", 1.0)
+            p = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-ss", f"{c['rec'] + k / FPS * sp:.3f}", "-i", S["src_path"], "-an",
+                                  "-vf", f"crop={w}:{h}:{x}:{y},scale={tw}:{th}:flags=lanczos,setpts=(PTS-STARTPTS)/{sp},fps={FPS}",
+                                  "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE, bufsize=10 ** 7)
+            rd = S["rd"] = dict(c=c, p=p, k=k, last=None)
+        n = tw * th * 3
+        while rd["k"] <= k:
+            b = rd["p"].stdout.read(n)
+            if len(b) == n: rd["last"] = b
+            rd["k"] += 1
+        im = Image.frombuffer("RGB", (tw, th), rd["last"], "raw", "RGB", 0, 1).copy()
+        x, y, w, h = c["crop"]; sx, sy = tw / w, th / h
+        for bx, by, bw, bh in S.get("blur", []):
+            box = (int((bx - x) * sx), int((by - y) * sy), int((bx + bw - x) * sx), int((by + bh - y) * sy))
+            box = (max(0, box[0]), max(0, box[1]), min(tw, box[2]), min(th, box[3]))
+            if box[2] > box[0] and box[3] > box[1]:
+                im.paste(im.crop(box).filter(ImageFilter.GaussianBlur(14)), box[:2])
+        return im
+
+    def split_frame(self, t, base):
+        S = self.split; fr = S["wall_im"].copy()
+        c = next(c for c in S["clips"] if c["t"] <= t < c["z"]) if t >= S["clips"][0]["t"] else S["clips"][0]
+        fr.paste(self._clip_frame(c, max(t, c["t"])), S["top"][:2])
+        fx, fy, fw, fh = S.get("face_crop", (0, 470, 1080, 828)); bx, by, bw, bh = S["bottom"]
+        fr.paste(base.convert("RGB").resize((bw, bh), Image.LANCZOS, box=(fx, fy, fx + fw, fy + fh)), (bx, by))
+        return fr
 
     # ---------- optional intro card: stop-motion frames + a label pop (e.g. "Day 5") + typed title ----------
     def _intro(self):
@@ -277,6 +326,7 @@ class Reel:
         return (best[0], (best[1], best[2])) if best else None
 
     def cap_pos(self, t, cw, ch):
+        if self.split and self.split["a"] <= t < self.split["z"]: return W / 2, self.split.get("cap_y", 776)
         if t < self.hook_end: return W / 2, CAP_Y
         for b in self.brolls:
             if b["a"] <= t < b["z"]: return W / 2, b["cap_y"]
@@ -337,6 +387,7 @@ class Reel:
                 zs = z0 + (z1 - z0) * u
                 fr = fr.resize((W, H), Image.BICUBIC, box=(ax - ax / zs, ay - ay / zs, ax + (W - ax) / zs, ay + (H - ay) / zs))
         if self.intro and self.intro["a"] <= t < self.intro["b"]: fr = self.intro_frame(t)
+        if self.split and self.split["a"] <= t < self.split["z"]: fr = self.split_frame(t, fr)
         for b in self.brolls:
             if b["a"] <= t < b["z"]:
                 fr = (b["wall"] or self.wall).copy(); place(fr, self.broll_frame(b, t), W / 2, b["y"])
@@ -361,6 +412,7 @@ class Reel:
         sfx = [("pop.mp3", t0, 0.22) for t0 in self.pop_sfx]
         if self.intro and self.intro["day"] is not None: sfx.append(("pop.mp3", self.intro["day_t"], 0.30))
         sfx += [("pop.mp3", b["a"], 0.20) for b in self.brolls if b["sfx"]]   # sfx=False: jump-cut continuations / own SFX
+        if self.split and self.split.get("sfx", True): sfx.append(("pop.mp3", self.split["a"], 0.20))
         if self.url: sfx.append(("pop.mp3", self.url_t, 0.32))
         sfx += [(f if os.path.isabs(f) or os.path.exists(os.path.join(SFX, f)) else self.s.path(f), self.T(at), v)
                 for f, at, v in self.s.get("EXTRA_SFX", [])]   # kit sfx name, or a reel-local trimmed file
