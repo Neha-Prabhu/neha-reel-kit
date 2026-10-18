@@ -73,7 +73,7 @@ class Reel:
             frames = [raw[i * fs:(i + 1) * fs] for i in range(len(raw) // fs)]
             k = cw / sw   # blur boxes (x, y, w, h) in (cropped) source pixels -> card pixels; hides URL bars / logos
             blur = [tuple(int(v * k) for v in (x, y, x + w, y + h)) for x, y, w, h in b.get("blur", [])]
-            self.brolls.append(dict(a=a, z=z, frames=frames, size=(cw, ch), y=b.get("y", 800), cap_y=b.get("cap_y", 1445),
+            self.brolls.append(dict(sfx=b.get("sfx", True), a=a, z=z, frames=frames, size=(cw, ch), y=b.get("y", 800), cap_y=b.get("cap_y", 1445),
                                     blur=blur, wall=wall(b["wall"]) if b.get("wall") else None))
 
     def broll_frame(self, b, t):
@@ -360,9 +360,10 @@ class Reel:
     def sfx_list(self):
         sfx = [("pop.mp3", t0, 0.22) for t0 in self.pop_sfx]
         if self.intro and self.intro["day"] is not None: sfx.append(("pop.mp3", self.intro["day_t"], 0.30))
-        sfx += [("pop.mp3", b["a"], 0.20) for b in self.brolls]
+        sfx += [("pop.mp3", b["a"], 0.20) for b in self.brolls if b["sfx"]]   # sfx=False: jump-cut continuations / own SFX
         if self.url: sfx.append(("pop.mp3", self.url_t, 0.32))
-        sfx += [(f, self.T(at), v) for f, at, v in self.s.get("EXTRA_SFX", [])]
+        sfx += [(f if os.path.isabs(f) or os.path.exists(os.path.join(SFX, f)) else self.s.path(f), self.T(at), v)
+                for f, at, v in self.s.get("EXTRA_SFX", [])]   # kit sfx name, or a reel-local trimmed file
         return sfx
 
 
