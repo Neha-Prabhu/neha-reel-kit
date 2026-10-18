@@ -8,8 +8,8 @@ LINES = [
     "Here are 3 websites that will make you feel like you're on a workation without being on one.",
     "First one is Drive and Listen.",
     "You just pick a city and it shows you a video of you driving through it.",
-    "And the radio that is playing is that city's actual radio.",          # Whisper heard "actual video" — confirm
-    "For example, I just tried Ahmedabad and Bangalore for you.",          # "for you" unclear — confirm
+    "And the radio that is playing is that city's actual radio*.",         # she said "video" — captioned radio* (her call)
+    "For example, I just tried Ahmedabad and Bangalore for you.",          # both recordings are Bangalore — fine by her
     "And of course you can see the traffic.",
     "The next one is Radio Garden.",
     "Here you spin the globe and tap on any dot.",
@@ -49,6 +49,7 @@ INTRO = None
 HOOK_END = None
 
 POPS = [
+    dict(img="img/01_beach-laptop_sticker.png", w=280, outline=10, at=("w", 0, "workation"), until=("cut", 0), x=905, y=830),
     dict(img="img/14_save_sticker.png", h=170, outline=10, at=("w", 14, "save"), until=(("end", 14), 1.5), x=925, y=900),
 ]
 
