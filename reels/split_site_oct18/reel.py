@@ -59,7 +59,8 @@ SEGS = [  # (source start, source end, speed)
 ]
 
 WALL = None
-INTRO = None
+INTRO = dict(line=3, frames="build/intro_frames", label="Day 5", title="Things I Found on the Internet Instead of Doomscrolling")
+#   build intro frames (classic blue):  python assets/intro/build_intro.py --out reels/split_site_oct18/build/intro_frames
 HOOK_END = None
 
 POPS = [
