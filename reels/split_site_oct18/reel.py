@@ -20,8 +20,8 @@ LINES = [
     "And how big is that? Oh, it's big.",
     "Oh, an estimation of 3 million people would receive 3rd degree burns.",
     "and then there is a 246 decibel shock wave that would",
-    "kill almost...",
-    "I should not use the word kill,",
+    "k*ll almost...",
+    "I should not use the word k*ll,",
     "that would impact almost 8 million people.",
     "and a 5 km/s peak wind",
     "would destroy 8 million people again.",
@@ -49,8 +49,8 @@ SEGS = [  # (source start, source end, speed)
     (38.34, 40.95, 1.1),  # 13 And how big is that? Oh, it's big.
     (41.37, 45.25, 1.1),  # 14 Oh, an estimation of 3 million people ... burns.
     (45.66, 48.93, 1.1),  # 15 and then there is a 246 decibel shock wave that would   (hiccup kept, 'oops' pop)
-    (49.05, 50.20, 1.1),  # 16 kill almost...
-    (50.33, 51.88, 1.1),  # 17 I should not use the word kill,
+    (49.05, 50.20, 1.1),  # 16 k*ll almost...
+    (50.33, 51.88, 1.1),  # 17 I should not use the word k*ll,
     (52.02, 54.72, 1.1),  # 18 that would impact almost 8 million people.
     (54.86, 57.10, 1.1),  # 19 and a 5 km/s peak wind
     (57.51, 60.10, 1.1),  # 20 would destroy 8 million people again.
@@ -108,7 +108,7 @@ EXTRA_SFX = [
     ("fire_whoosh.mp3", (("cut", 11), -0.05), 0.32),          # wide fireball
     ("pop.mp3", 36.18, 0.14),                                 # oops
     ("impact_boom_big.mp3", (("w", 15, "shock"), -0.03), 0.30),  # 246 decibel shock wave
-    ("src/sfx_scratch_short.wav", (("cut", 16), -0.42), 0.20),  # "kill almost..." record scratch
+    ("src/sfx_scratch_short.wav", (("cut", 16), -0.42), 0.20),  # "k*ll almost..." record scratch
 ]
 WEIGHTED = []
 URL = "neal.fun/asteroid-launcher"
