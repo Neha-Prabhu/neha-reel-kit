@@ -14,3 +14,4 @@ stays out of git — it lives in reels/<name>/img|src locally only.
 | `logos-and-ui/` | pinterest_logo (.png/.avif), whatsapp_bubble_anim.mp4 (white + green chat bubbles on black — key out black) | for text hooks / mock UI pops |
 | `logos-and-ui/` | pawmuch_cat_icon.png, pawmuch_pin.png — Pawmuch listing-card icons (used by tools/pawmuch_card.py) | rebuild listing screenshots as identical card pops |
 | `intro/` | build_intro.py (stop-motion desk intro card), heads/ (head cutouts), halloween_props.py | optional intro card |
+- `luts/warm_pop.cube`, `luts/warm_pop_light.cube` — house colour grade for A-roll / B-roll (made by tools/make_lut.py)

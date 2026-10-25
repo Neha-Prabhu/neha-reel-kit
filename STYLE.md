@@ -57,3 +57,6 @@
 **Process**
 - Rough cut first (pacing only) → full edit → one consolidated feedback round.
 - Don't change anything she didn't ask for; summarise changes before editing when she asks for a summary.
+
+## Colour
+- A-roll grade: `assets/luts/warm_pop.cube` (contrast + vibrance, skin protected, warm highlights / cool shadows); B-roll gets `warm_pop_light.cube`. Rebuild with `tools/make_lut.py`.
