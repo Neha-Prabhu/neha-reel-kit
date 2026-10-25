@@ -36,9 +36,10 @@ CUTAWAYS = [
     dict(src="src/kicked_him_out.mov", parts=[(0.0, 4.3, 1.5), (4.3, 7.5, 1.0)], voice=(18.09, 20.17)),
 ]
 
-POPS = [   # AI-app stickers land on "AI" (both sides of her face); nervous cat on "But I love my job"
-    dict(img="img/01_chatgpt_sticker.png", w=230, outline=10, at=("w", 2, "AI"), until=("w", 3, "how"), x=165, y=830),
-    dict(img="img/01_claude_sticker.png", w=250, outline=10, at=("w", 2, "AI"), until=("w", 3, "how"), x=890, y=830, sfx=False),
+POPS = [   # AI-app logos on "AI"; nervous cat on "But I love my job"
+    # AI logos whoosh up above her head (left + right), hold ~1.5 s, whoosh out
+    dict(img="img/01_chatgpt_sticker.png", w=220, outline=10, at=("w", 2, "AI"), until=(("w", 2, "AI"), 1.6), x=330, y=400, anim="whoosh"),
+    dict(img="img/01_claude_sticker.png", w=240, outline=10, at=("w", 2, "AI"), until=(("w", 2, "AI"), 1.6), x=760, y=400, anim="whoosh", sfx=False),
     dict(img="img/09_nervous_cat.jpg", w=300, r=28, outline=10, at=("w", 10, "But"), until=("start", 11), x=890, y=880),
 ]
 

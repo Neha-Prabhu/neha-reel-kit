@@ -45,10 +45,14 @@ class Reel:
     # ---------- pops ----------
     def _pops(self):
         self.pops, self.pop_sfx = [], []   # pop sfx=False = no pop sound (e.g. a text hook on frame 1)
+        self.pop_anim, self.whoosh_sfx = [], []   # anim="whoosh": slides up into place + whoosh in, slides up + fades out
         for p in self.s.get("POPS", []):
             im = load(self.s.path(p["img"]), w=p.get("w"), h=p.get("h"), r=p.get("r", 0), outline=p.get("outline", 0))
             self.pops.append((im, self.T(p["at"]), self.T(p["until"]), p["x"], p["y"]))
-            if p.get("sfx", True): self.pop_sfx.append(self.T(p["at"]))
+            self.pop_anim.append(p.get("anim"))
+            if p.get("anim") == "whoosh":
+                if p.get("sfx", True): self.whoosh_sfx += [("whoosh.mp3", self.T(p["at"]) - 0.06, 0.35), ("whoosh_soft.mp3", self.T(p["until"]) - 0.16, 0.25)]
+            elif p.get("sfx", True): self.pop_sfx.append(self.T(p["at"]))
         self.boxes = [(t0, t1, x - im.width / 2, y - im.height / 2, x + im.width / 2, y + im.height / 2)
                       for im, t0, t1, x, y in self.pops]
 
@@ -429,8 +433,16 @@ class Reel:
             if b["a"] <= t < b["z"]:
                 if b["over"]: place(fr, self.broll_frame(b, t), b["x"], b["y"])
                 else: fr = (b["wall"] or self.wall).copy(); place(fr, self.broll_frame(b, t), W / 2, b["y"])
-        for im, t0, t1, x, y in self.pops:
-            if t0 <= t < t1: place(fr, im, x, y)
+        for (im, t0, t1, x, y), an in zip(self.pops, self.pop_anim):
+            if not (t0 <= t < t1): continue
+            if an == "whoosh":
+                IN, OUT = 0.22, 0.18
+                if t < t0 + IN: u = 1 - (1 - (t - t0) / IN) ** 3; dy, a = (1 - u) * 260, u          # ease-out up into place
+                elif t > t1 - OUT: u = ((t - (t1 - OUT)) / OUT) ** 2; dy, a = -u * 220, 1 - u    # whoosh up and away
+                else: dy, a = 0, 1
+                if a < 1: im = im.copy(); im.putalpha(im.split()[3].point(lambda v: int(v * a)))
+                place(fr, im, x, y + dy)
+            else: place(fr, im, x, y)
         if self.url and t >= self.url_t: place(fr, self.url, W / 2, self.s.get("URL_Y", 300))
         for g0, g1, items in self.kin:
             if g0 <= t < g1:
@@ -447,7 +459,7 @@ class Reel:
         return fr
 
     def sfx_list(self):
-        sfx = [("pop.mp3", t0, 0.22) for t0 in self.pop_sfx]
+        sfx = [("pop.mp3", t0, 0.22) for t0 in self.pop_sfx] + self.whoosh_sfx
         if self.intro and self.intro["day"] is not None: sfx.append(("pop.mp3", self.intro["day_t"], 0.30))
         sfx += [("pop.mp3", b["a"], 0.20) for b in self.brolls if b["sfx"]]   # sfx=False: jump-cut continuations / own SFX
         if self.split and self.split.get("sfx", True): sfx.append(("pop.mp3", self.split["a"], 0.20))

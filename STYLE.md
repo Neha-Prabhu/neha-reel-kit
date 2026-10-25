@@ -61,3 +61,4 @@
 ## Colour
 - A-roll grade: `assets/luts/warm_pop.cube` (contrast + vibrance, skin protected, warm highlights / cool shadows); B-roll gets `warm_pop_light.cube`. Rebuild with `tools/make_lut.py`.
 - B-roll audio is always muted (she adds music on top); let reaction B-roll play out rather than cutting back to A-roll between related clips.
+- Logo/icon stickers for a word (e.g. AI apps on "AI"): `anim="whoosh"` — whoosh up ABOVE her head, left + right, hold ~1.5 s, whoosh out. Not beside her face.
