@@ -63,4 +63,3 @@
 - B-roll audio is always muted (she adds music on top); let reaction B-roll play out rather than cutting back to A-roll between related clips.
 - Logo/icon stickers for a word (e.g. AI apps on "AI"): `anim="whoosh"` — whoosh up ABOVE her head, left + right, hold ~1.5 s, whoosh out. Not beside her face.
 - Background removal fallback: rembg u2net/isnet fail on low-contrast blurry photos (white cat) and BiRefNet OOMs here -> OpenCV GrabCut seeded with a bright-pixel mask + fg ellipse, largest component, fill holes, feather (boss_prank cat).
-- Meme stickers on A-roll beats: background removed + white outline, ABOVE her head (y~420), alternating right/left, ~350 px wide, each paired with an SFX (boss_prank).

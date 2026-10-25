@@ -40,13 +40,6 @@ POPS = [   # AI-app logos on "AI"; nervous cat on "But I love my job"
     # AI logos whoosh up above her head (left + right), hold ~1.5 s, whoosh out
     dict(img="img/01_chatgpt_sticker.png", w=220, outline=10, at=("w", 2, "AI"), until=(("w", 2, "AI"), 1.6), x=330, y=400, anim="whoosh"),
     dict(img="img/01_claude_sticker.png", w=240, outline=10, at=("w", 2, "AI"), until=(("w", 2, "AI"), 1.6), x=760, y=400, anim="whoosh", sfx=False),
-    # meme stickers (bg removed + white outline) ABOVE her head, alternating right/left (beside her face looked off)
-    dict(img="img/03_babu_bhaiya_sticker.png", w=360, outline=10, at=("w", 3, "PPT"), until=("w", 4, "downloaded"), x=790, y=420, sfx=False),  # thud
-    dict(img="img/04_bean_grin_sticker.png", w=350, outline=10, at=("w", 4, "downloaded"), until=("start", 5), x=290, y=420),
-    dict(img="img/05_hacker_cat_sticker.png", w=360, outline=10, at=("w", 5, "connected"), until=("w", 5, "played"), x=790, y=420),
-    dict(img="img/05_puppet_hands_sticker.png", h=440, outline=10, at=("w", 5, "played"), until=("start", 6), x=290, y=400, sfx=False),  # whoosh_soft
-    dict(img="img/09_akshay_smirk_sticker.png", w=380, outline=10, at=("w", 9, "fun"), until=("w", 9, "WhatsApp"), x=790, y=420, sfx=False),  # sparkle
-    dict(img="img/09_thanos_sus_sticker.png", w=300, outline=10, at=("w", 9, "WhatsApp"), until=("w", 10, "But"), x=290, y=410),
     dict(img="img/10_nervous_cat_sticker.png", w=300, outline=10, at=("w", 10, "But"), until=("start", 11), x=890, y=880),
 ]
 
@@ -55,24 +48,8 @@ CAPTIONS = dict(font="Diagramm-UltraBoldItalic.ttf", size=72, y=1140, key_scale=
                 key=[(0, "smartwatch"), (1, "prank"), (1, "boss"), (2, "AI"), (3, "PPT"), (4, "app"), (4, "smartwatch"), (5, "Mac"),
                      (5, "all"), (5, "day"), (6, "music"), (7, "YouTube"), (8, "kicked"), (8, "manager"),
                      (9, "WhatsApp"), (10, "love"), (10, "job"), (11, "prank"), (12, "comment"), (12, "link")])
-EXTRA_SFX = [   # (file, at, volume) — kit sfx or reel-local trims; kept under her voice
-    ("whoosh_soft.mp3", 1.10, 0.30),          # cut to boggled boss
-    ("impact_boom.mp3", ("w", 1, "boss"), 0.28),
-    ("thud.mp3", ("w", 3, "PPT"), 0.30),       # the irony
-    ("build/sfx_typing.wav", ("w", 5, "connected"), 0.22),   # hacker cat
-    ("mouse_click.mp3", ("w", 5, "Mac"), 0.55),
-    ("whoosh_soft.mp3", (("w", 5, "played"), -0.05), 0.30),  # puppet hand
-    ("sparkle.mp3", ("w", 9, "fun"), 0.25),                  # Akshay smirk
-    ("build/sfx_riser.wav", 11.35, 0.22),      # riser tail peaks on the cut to the meeting
-    ("whoosh.mp3", 13.09, 0.30),              # -> YouTube clip
-    ("mouse_click.mp3", 15.96, 0.55),          # YouTube opens on his screen (~16.03)
-    ("impact_boom.mp3", 16.03, 0.28),
-    ("whoosh.mp3", 18.00, 0.30),              # -> kicked-out clip
-    ("mouse_click.mp3", ("w", 8, "kicked"), 0.55),
-    ("record_scratch.mp3", 20.28, 0.35),       # his "what happened?!"
-    ("whoosh_soft.mp3", 22.63, 0.30),          # back to her
-    ("build/sfx_typing.wav", ("w", 9, "text"), 0.30),
-    ("ding.mp3", ("w", 12, "link"), 0.30),
+EXTRA_SFX = [   # draft 10: she removed the full SFX pass + meme stickers; only the record scratch stays
+    ("record_scratch.mp3", 19.78, 0.35),       # his "what happened?!" (0.5 s earlier than draft 9)
 ]
 URL = ""                         # WowMouse URL to confirm with her, then URL_AT = ("w", 12, "link")
 URL_AT = ("w", 12, "link")
