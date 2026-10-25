@@ -53,7 +53,7 @@ CAPTIONS = dict(font="Diagramm-UltraBoldItalic.ttf", size=72, y=1140, key_scale=
                      (9, "WhatsApp"), (10, "love"), (10, "job"), (11, "prank"), (12, "comment"), (12, "link")])
 SFX_GAIN = 0.5                   # draft 12: she wanted all SFX lower
 EXTRA_SFX = [   # draft 10: she removed the full SFX pass + meme stickers; only the record scratch stays
-    ("record_scratch.mp3", (("w", 1, "prank"), 0.26), 0.11),   # as "prank" ends — draft 14: -10 dB (0.35 -> 0.11)
+    ("record_scratch.mp3", (("w", 1, "prank"), 0.26), 0.022),  # as "prank" ends — draft 15: 80% lower than draft 14 (0.11 -> 0.022)
     ("record_scratch.mp3", 20.33, 0.35),       # draft 14: right after she finishes "manager"
 ]
 URL = ""                         # WowMouse URL to confirm with her, then URL_AT = ("w", 12, "link")
