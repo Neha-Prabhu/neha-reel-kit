@@ -1,3 +1,6 @@
+# NOTE: the per-segment apad/atrim audio below drifted ~1 s after the YouTube clip. The audio actually used was rebuilt
+# with each voice piece adelay-ed to absolute times: (0,13.15)@0, (13.15,15.10)@13.15, (15.40,17.62)@15.10,
+# (18.09,20.17)@19.149, (20.22,30.55)@24.129 -> amix. Do it that way next time.
 import subprocess
 L="/home/claude/neha-reel-kit/assets/luts/"; FPS=24
 # B-roll is always MUTED — only her voice; music goes on top later.
