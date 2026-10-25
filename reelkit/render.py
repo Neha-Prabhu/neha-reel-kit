@@ -350,7 +350,7 @@ class Reel:
         if self.url is not None and self.url_t < s1:
             uy = self.s.get("URL_Y", 300); obs.append((40, uy - 100, W - 40, uy + 100))
         best = None
-        for dy in (0, 70, -60, 140, 210, 245, 280, 315, 350, -120):
+        for dy in (0, 70, -60, 140, 210, 245, 280, 315, 350, -120, -200, -280, -360):
             for x in (540, 620, 460, 700, 380, 780, 300, 860, 220):
                 y = self.kY + dy
                 if x - cw / 2 < 20 or x + cw / 2 > W - 20 or y + ch / 2 > SAFE_BOTTOM: continue
