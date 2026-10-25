@@ -48,6 +48,22 @@ CAPTIONS = dict(font="Diagramm-UltraBoldItalic.ttf", size=72, y=1140, key_scale=
                 key=[(0, "smartwatch"), (1, "prank"), (1, "boss"), (2, "AI"), (3, "PPT"), (4, "app"), (4, "smartwatch"), (5, "Mac"),
                      (5, "all"), (5, "day"), (6, "music"), (7, "YouTube"), (8, "kicked"), (8, "manager"),
                      (9, "WhatsApp"), (10, "love"), (10, "job"), (11, "prank"), (12, "comment"), (12, "link")])
+EXTRA_SFX = [   # (file, at, volume) — kit sfx or reel-local trims; kept under her voice
+    ("whoosh_soft.mp3", 1.10, 0.30),          # cut to boggled boss
+    ("impact_boom.mp3", ("w", 1, "boss"), 0.28),
+    ("thud.mp3", ("w", 3, "PPT"), 0.30),       # the irony
+    ("mouse_click.mp3", ("w", 5, "Mac"), 0.55),
+    ("build/sfx_riser.wav", 11.35, 0.22),      # riser tail peaks on the cut to the meeting
+    ("whoosh.mp3", 13.09, 0.30),              # -> YouTube clip
+    ("mouse_click.mp3", 15.96, 0.55),          # YouTube opens on his screen (~16.03)
+    ("impact_boom.mp3", 16.03, 0.28),
+    ("whoosh.mp3", 18.00, 0.30),              # -> kicked-out clip
+    ("mouse_click.mp3", ("w", 8, "kicked"), 0.55),
+    ("record_scratch.mp3", 20.28, 0.35),       # his "what happened?!"
+    ("whoosh_soft.mp3", 22.63, 0.30),          # back to her
+    ("build/sfx_typing.wav", ("w", 9, "text"), 0.30),
+    ("ding.mp3", ("w", 12, "link"), 0.30),
+]
 URL = ""                         # WowMouse URL to confirm with her, then URL_AT = ("w", 12, "link")
 URL_AT = ("w", 12, "link")
 HOLD = 0.4
