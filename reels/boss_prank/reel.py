@@ -40,7 +40,7 @@ POPS = [   # AI-app logos on "AI"; nervous cat on "But I love my job"
     # AI logos whoosh up above her head (left + right), hold ~1.5 s, whoosh out
     dict(img="img/01_chatgpt_sticker.png", w=220, outline=10, at=("w", 2, "AI"), until=(("w", 2, "AI"), 1.6), x=330, y=400, anim="whoosh"),
     dict(img="img/01_claude_sticker.png", w=240, outline=10, at=("w", 2, "AI"), until=(("w", 2, "AI"), 1.6), x=760, y=400, anim="whoosh", sfx=False),
-    dict(img="img/09_nervous_cat.jpg", w=300, r=28, outline=10, at=("w", 10, "But"), until=("start", 11), x=890, y=880),
+    dict(img="img/10_nervous_cat_sticker.png", w=300, outline=10, at=("w", 10, "But"), until=("start", 11), x=890, y=880),
 ]
 
 # faces.json: Haar misses the boss in cutaways -> hand boxes 1.17-2.40 boggled (360,1020,740,1420), 13.15-18.06 (560,450,980,1350) and 18.0-24.1 (180,880,660,1330)
