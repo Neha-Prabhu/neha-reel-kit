@@ -19,7 +19,7 @@ LINES = [
     "But I love my job.",
     "If you want to do something similar or prank anyone,",
     "you do not have to comment for this link.",
-    # "because it's called Wow Mouse" -> cut; URL pops instead
+    # "because it's called Wow Mouse" -> added back in the final (after her own edit)
 ]
 END = 30.55
 
@@ -56,7 +56,7 @@ EXTRA_SFX = [   # draft 10: she removed the full SFX pass + meme stickers; only 
     ("record_scratch.mp3", (("w", 1, "prank"), 0.26), 0.022),  # as "prank" ends — draft 15: 80% lower than draft 14 (0.11 -> 0.022)
     ("record_scratch.mp3", 20.33, 0.35),       # draft 14: right after she finishes "manager"
 ]
-URL = ""                         # final: she finished the edit herself (src/end_search.mp4); search bar "Remote Mouse" added on "link" (31.59) + 1.5 s hold via ffmpeg
+URL = ""                         # final: her own edit (src/end_search.mp4) + "because it's called WowMouse" (aroll 30.42-31.5, graded, kinetic caption) appended; search bar "WowMouse" from "link" (31.59) + 1.5 s hold, via ffmpeg/PIL
 URL_AT = ("w", 12, "link")
 HOLD = 0.4
 CAP_MAX_TAIL = 1.0               # clear captions ~1 s after the last word (music-only stretches stay clean)
