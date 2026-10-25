@@ -63,3 +63,4 @@
 - B-roll audio is always muted (she adds music on top); let reaction B-roll play out rather than cutting back to A-roll between related clips.
 - Logo/icon stickers for a word (e.g. AI apps on "AI"): `anim="whoosh"` — whoosh up ABOVE her head, left + right, hold ~1.5 s, whoosh out. Not beside her face.
 - Background removal fallback: rembg u2net/isnet fail on low-contrast blurry photos (white cat) and BiRefNet OOMs here -> OpenCV GrabCut seeded with a bright-pixel mask + fg ellipse, largest component, fill holes, feather (boss_prank cat).
+- Face stickers: POPS track=(ax, ay) rides the sticker on her face (faces.json); SFX_GAIN in a spec scales every SFX (boss_prank uses 0.5 — she found 1.0 loud).

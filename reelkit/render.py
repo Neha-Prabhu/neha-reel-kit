@@ -45,11 +45,14 @@ class Reel:
     # ---------- pops ----------
     def _pops(self):
         self.pops, self.pop_sfx = [], []   # pop sfx=False = no pop sound (e.g. a text hook on frame 1)
-        self.pop_anim, self.whoosh_sfx = [], []   # anim="whoosh": slides up into place + whoosh in, slides up + fades out
+        self.pop_anim, self.whoosh_sfx, self.pop_track = [], [], {}   # anim="whoosh": slides up into place + whoosh in, slides up + fades out
         for p in self.s.get("POPS", []):
             im = load(self.s.path(p["img"]), w=p.get("w"), h=p.get("h"), r=p.get("r", 0), outline=p.get("outline", 0))
-            self.pops.append((im, self.T(p["at"]), self.T(p["until"]), p["x"], p["y"]))
+            self.pops.append((im, self.T(p["at"]), self.T(p["until"]), p.get("x", W / 2), p.get("y", H / 2)))
             self.pop_anim.append(p.get("anim"))
+            if p.get("track"):   # track=(ax, ay): sticker rides on her face; (ax, ay) = point of the image put on the face centre
+                ft = [f for f in json.load(open(self.s.path(p.get("faces", "build/faces.json")))) if f[1] is not None and f[2] < 1400]
+                self.pop_track[len(self.pops) - 1] = (ft, p["track"], p.get("track_dy", 0))
             if p.get("anim") == "whoosh":
                 if p.get("sfx", True): self.whoosh_sfx += [("whoosh.mp3", self.T(p["at"]) - 0.06, 0.35), ("whoosh_soft.mp3", self.T(p["until"]) - 0.16, 0.25)]
             elif p.get("sfx", True): self.pop_sfx.append(self.T(p["at"]))
@@ -433,8 +436,18 @@ class Reel:
             if b["a"] <= t < b["z"]:
                 if b["over"]: place(fr, self.broll_frame(b, t), b["x"], b["y"])
                 else: fr = (b["wall"] or self.wall).copy(); place(fr, self.broll_frame(b, t), W / 2, b["y"])
-        for (im, t0, t1, x, y), an in zip(self.pops, self.pop_anim):
+        for k, ((im, t0, t1, x, y), an) in enumerate(zip(self.pops, self.pop_anim)):
             if not (t0 <= t < t1): continue
+            if k in self.pop_track:
+                ft, (ax, ay), tdy = self.pop_track[k]
+                near = sorted(ft, key=lambda f: abs(f[0] - t))[:2]
+                if near:
+                    if len(near) == 2 and near[0][0] != near[1][0]:
+                        (ta, *A), (tb, *B) = sorted(near); u = min(1, max(0, (t - ta) / (tb - ta)))
+                        box = [a_ + (b_ - a_) * u for a_, b_ in zip(A, B)]
+                    else: box = near[0][1:]
+                    cx, cy = (box[0] + box[2]) / 2, (box[1] + box[3]) / 2 + tdy
+                    x, y = cx + (0.5 - ax) * im.width, cy + (0.5 - ay) * im.height
             if an == "whoosh":
                 IN, OUT = 0.22, 0.18
                 if t < t0 + IN: u = 1 - (1 - (t - t0) / IN) ** 3; dy, a = (1 - u) * 260, u          # ease-out up into place
@@ -466,7 +479,8 @@ class Reel:
         if self.url: sfx.append(("pop.mp3", self.url_t, 0.32))
         sfx += [(f if os.path.isabs(f) or os.path.exists(os.path.join(SFX, f)) else self.s.path(f), self.T(at), v)
                 for f, at, v in self.s.get("EXTRA_SFX", [])]   # kit sfx name, or a reel-local trimmed file
-        return sfx
+        g = self.s.get("SFX_GAIN", 1.0)   # one knob to sit every SFX lower/higher under her voice
+        return [(f, t, v * g) for f, t, v in sfx]
 
 
 def run(spec_path, only=()):
