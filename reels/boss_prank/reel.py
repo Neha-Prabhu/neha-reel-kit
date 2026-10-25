@@ -1,5 +1,5 @@
 """boss_prank — pranked my boss with WowMouse on my smartwatch (Doublepoint WowMouse).
-Draft 5: base cut from render_cut.py (grade, muted B-roll), then reelkit adds kinetic captions + sticker pops.
+Draft 5: base cut from render_cut.py (grade, muted B-roll), then reelkit adds kinetic captions + sticker pops."""
 
 AROLL = "src/aroll.mp4"          # her own pre-trimmed 1080x1920 24 fps export, 31.5 s
 # Draft 4: the graded/B-roll cut (build/roughcut.mp4 = draft 3, 30 fps) is the base; reelkit adds kinetic captions.
