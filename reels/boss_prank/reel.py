@@ -18,10 +18,14 @@ END = 30.55
 
 GRADE = dict(aroll="assets/luts/warm_pop.cube", broll="assets/luts/warm_pop_light.cube")
 
-BROLL = [  # full-screen cutaways, own audio at 0.35 under her voice; (src, src_in, src_out, tl_start, tl_end)
+BROLL = [  # (src, src_in, src_out, tl_start, tl_end) — overlay on A-roll, own audio at 0.35
     ("src/far_boss_boggled.MOV", 2.6, 4.5, 11.0, 12.91),   # "...played with him all day"
-    ("src/youtube_play.MOV",     7.0, 9.6, 15.44, 17.49),  # YouTube appears ~7.6 s in source
-    ("src/kicked_him_out.mov",   3.6, 7.5, 18.09, 21.2),   # phone drop ~4.5 s in source
+]
+# Draft 2: YouTube + kicked-out play back to back as full cutaways (A-roll paused, room left for music).
+# Her line sits under each so it ends on the payoff; clip sound 0.9, ducked to 0.3 under her voice.
+CUTAWAYS = [  # inserted after A-roll 15.44; A-roll resumes at 20.22 ("This entire thing...")
+    dict(src="src/youtube_play.MOV", parts=[(2.0, 7.5, 1.5), (7.5, 9.6, 1.0)], voice=(15.44, 17.62)),  # explains -> YouTube at 7.6
+    dict(src="src/kicked_him_out.mov", parts=[(0.0, 4.3, 1.5), (4.3, 7.5, 1.0)], voice=(18.09, 20.17)), # she turns -> his reaction -> looks back
 ]
 
 URL = "doublepoint.com"          # to confirm with her
