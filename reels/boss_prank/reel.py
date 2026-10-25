@@ -33,7 +33,7 @@ CUTAWAYS = [
     # under BOTH lines "I played music…meeting" + "Opened his YouTube…screen" (pause between removed); ~0.7 s of song after
     dict(src="src/youtube_play.MOV", parts=[(3.0, 7.5, 1.6), (7.5, 9.6, 1.0)], voice=[(13.15, 15.10), (15.40, 17.62)]),
     # approved: she turns -> does it -> his reaction -> he looks back, she's turned away; line ends on his reaction
-    dict(src="src/kicked_him_out.mov", parts=[(0.0, 4.3, 1.5), (4.3, 7.5, 1.0)], voice=(18.09, 20.17)),
+    dict(src="src/kicked_him_out.mov", parts=[(1.0, 4.3, 1.6), (4.3, 7.5, 1.25)], voice=(18.09, 20.17)),  # draft 7: first 1 s cut, faster
 ]
 
 POPS = [   # AI-app logos on "AI"; nervous cat on "But I love my job"

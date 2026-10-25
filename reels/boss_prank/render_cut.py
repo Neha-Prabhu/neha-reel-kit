@@ -4,11 +4,11 @@ import subprocess
 L = "/home/claude/neha-reel-kit/assets/luts/"; FPS = 30
 BOG = (3.8, 4.9, 1.17, 2.40)        # boggled: src in/out -> timeline "to prank my boss" (~0.9x)
 YT = [(3.0, 7.5, 1.6), (7.5, 9.6, 1.0)]
-KK = [(0.0, 4.3, 1.5), (4.3, 7.5, 1.0)]
+KK = [(1.0, 4.3, 1.6), (4.3, 7.5, 1.25)]   # first 1 s cut, a bit faster (draft 7)
 d = lambda p: sum((o - i) / s for i, o, s in p)
 y0 = 13.15; k0 = y0 + d(YT); a2 = k0 + d(KK); END = a2 + (30.55 - 20.22)
 VOICE = [(0, 13.15, 0), (13.15, 15.10, 13.15), (15.40, 17.62, 15.10),
-         (18.09, 20.17, k0 + 4.3 / 1.5 + 0.3 - 2.08), (20.22, 30.55, a2)]
+         (18.09, 20.17, k0 + (4.3 - 1.0) / 1.6 + 0.3 / 1.25 - 2.08), (20.22, 30.55, a2)]
 fc = []
 def clip(inp, parts, tag):
     for k, (i, o, s) in enumerate(parts):
