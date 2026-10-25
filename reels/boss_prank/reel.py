@@ -40,6 +40,10 @@ POPS = [   # AI-app logos on "AI"; nervous cat on "But I love my job"
     # AI logos whoosh up above her head (left + right), hold ~1.5 s, whoosh out
     dict(img="img/01_chatgpt_sticker.png", w=220, outline=10, at=("w", 2, "AI"), until=(("w", 2, "AI"), 1.6), x=330, y=400, anim="whoosh"),
     dict(img="img/01_claude_sticker.png", w=240, outline=10, at=("w", 2, "AI"), until=(("w", 2, "AI"), 1.6), x=760, y=400, anim="whoosh", sfx=False),
+    # photo pop (bg kept) above her head on "connected it to his Mac"
+    dict(img="img/05_hacker_cat.jpg", w=640, r=22, at=("w", 5, "connected"), until=("w", 5, "and"), x=540, y=390),
+    # hacker-cat photo pop (keep bg, rounded), above her head, on "connected it to his Mac"
+    dict(img="img/05_hacker_cat_photo.jpg", w=560, r=24, at=("w", 5, "connected"), until=("w", 5, "played"), x=540, y=400),
     dict(img="img/10_nervous_cat_sticker.png", w=300, outline=10, at=("w", 10, "But"), until=("start", 11), x=890, y=880),
 ]
 
@@ -49,6 +53,7 @@ CAPTIONS = dict(font="Diagramm-UltraBoldItalic.ttf", size=72, y=1140, key_scale=
                      (5, "all"), (5, "day"), (6, "music"), (7, "YouTube"), (8, "kicked"), (8, "manager"),
                      (9, "WhatsApp"), (10, "love"), (10, "job"), (11, "prank"), (12, "comment"), (12, "link")])
 EXTRA_SFX = [   # draft 10: she removed the full SFX pass + meme stickers; only the record scratch stays
+    ("record_scratch.mp3", (("w", 1, "prank"), 0.26), 0.35),   # as "prank" ends
     ("record_scratch.mp3", 19.78, 0.35),       # his "what happened?!" (0.5 s earlier than draft 9)
 ]
 URL = ""                         # WowMouse URL to confirm with her, then URL_AT = ("w", 12, "link")
