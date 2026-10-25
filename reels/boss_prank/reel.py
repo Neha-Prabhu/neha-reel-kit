@@ -40,9 +40,9 @@ POPS = [   # AI-app logos on "AI"; nervous cat on "But I love my job"
     # AI logos whoosh up above her head (left + right), hold ~1.5 s, whoosh out
     dict(img="img/01_chatgpt_sticker.png", w=220, outline=10, at=("w", 2, "AI"), until=(("w", 2, "AI"), 1.6), x=330, y=400, anim="whoosh"),
     dict(img="img/01_claude_sticker.png", w=240, outline=10, at=("w", 2, "AI"), until=(("w", 2, "AI"), 1.6), x=760, y=400, anim="whoosh", sfx=False),
-    # hacker cat (bg removed) stuck ON her face, following the face track, on "connected it to his Mac"
-    dict(img="img/05_hacker_cat_sticker.png", w=520, outline=10, at=("w", 5, "connected"), until=("w", 5, "played"),
-         x=550, y=920, track=(0.385, 0.45)),
+    # hacker-cat photo (bg KEPT, rounded) popped over her face, following the face track, on "connected it to his Mac"
+    dict(img="img/05_hacker_cat_photo.jpg", w=600, r=24, at=("w", 5, "connected"), until=("w", 5, "played"),
+         x=550, y=920, track=(0.5, 0.5)),
     dict(img="img/10_nervous_cat_sticker.png", w=300, outline=10, at=("w", 10, "But"), until=("start", 11), x=890, y=880),
 ]
 
