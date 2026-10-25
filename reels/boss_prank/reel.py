@@ -56,7 +56,7 @@ EXTRA_SFX = [   # draft 10: she removed the full SFX pass + meme stickers; only 
     ("record_scratch.mp3", (("w", 1, "prank"), 0.26), 0.022),  # as "prank" ends — draft 15: 80% lower than draft 14 (0.11 -> 0.022)
     ("record_scratch.mp3", 20.33, 0.35),       # draft 14: right after she finishes "manager"
 ]
-URL = ""                         # WowMouse URL to confirm with her, then URL_AT = ("w", 12, "link")
+URL = ""                         # final: she finished the edit herself (src/end_search.mp4); search bar "Remote Mouse" added on "link" (31.59) + 1.5 s hold via ffmpeg
 URL_AT = ("w", 12, "link")
 HOLD = 0.4
 CAP_MAX_TAIL = 1.0               # clear captions ~1 s after the last word (music-only stretches stay clean)
